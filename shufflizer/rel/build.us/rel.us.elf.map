@@ -1,0 +1,874 @@
+
+Discarded input sections
+
+ .text          0x0000000000000000        0x0 mod.o
+ .data          0x0000000000000000        0x0 mod.o
+ .bss           0x0000000000000000        0x0 mod.o
+ .text          0x0000000000000000        0x0 shufflizer_menu.o
+ .data          0x0000000000000000        0x0 shufflizer_menu.o
+ .bss           0x0000000000000000        0x0 shufflizer_menu.o
+ .text          0x0000000000000000        0x0 common.o
+ .data          0x0000000000000000        0x0 common.o
+ .bss           0x0000000000000000        0x0 common.o
+ .text._ZN3mod6common16GetStorySequenceEv
+                0x0000000000000000       0x20 common.o
+ .text._ZN3mod6common21HasKeyItemInInventoryEs
+                0x0000000000000000       0x38 common.o
+ .data._ZN3mod6common9kPouchPtrE
+                0x0000000000000000        0x4 common.o
+ .text          0x0000000000000000        0x0 shufflizer_common.o
+ .data          0x0000000000000000        0x0 shufflizer_common.o
+ .bss           0x0000000000000000        0x0 shufflizer_common.o
+ .text          0x0000000000000000        0x0 cxx.o
+ .data          0x0000000000000000        0x0 cxx.o
+ .bss           0x0000000000000000        0x0 cxx.o
+ .text._ZdlPv   0x0000000000000000        0xc cxx.o
+ .text._ZdaPv   0x0000000000000000        0x4 cxx.o
+ .text          0x0000000000000000        0x0 patch.o
+ .data          0x0000000000000000        0x0 patch.o
+ .bss           0x0000000000000000        0x0 patch.o
+ .text          0x0000000000000000        0x0 shufflizer.o
+ .data          0x0000000000000000        0x0 shufflizer.o
+ .bss           0x0000000000000000        0x0 shufflizer.o
+ .text          0x0000000000000000        0x0 rel.o
+ .data          0x0000000000000000        0x0 rel.o
+ .bss           0x0000000000000000        0x0 rel.o
+ .text          0x0000000000000000       0x58 restfpr_x.o
+ .data          0x0000000000000000        0x0 restfpr_x.o
+ .bss           0x0000000000000000        0x0 restfpr_x.o
+ .data          0x0000000000000000        0x0 restgpr_x.o
+ .bss           0x0000000000000000        0x0 restgpr_x.o
+ .data          0x0000000000000000        0x0 charlieton_sell_price_patches.o
+ .bss           0x0000000000000000        0x0 charlieton_sell_price_patches.o
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Linker script and memory map
+
+                0x0000000080003100                . = 0x80003100
+
+.init
+ *crt0.o(*.init)
+ *(.init)
+
+.plt
+ *(.plt)
+
+.interp
+ *(.interp)
+
+.hash
+ *(.hash)
+
+.dynsym
+ *(.dynsym)
+
+.dynstr
+ *(.dynstr)
+
+.gnu.version
+ *(.gnu.version)
+
+.gnu.version_d
+ *(.gnu.version_d)
+
+.gnu.version_r
+ *(.gnu.version_r)
+
+.rel.init
+ *(.rel.init)
+
+.rela.init
+ *(.rela.init)
+
+.rel.text
+ *(.rel.text .rel.text.* .rel.gnu.linkonce.t.*)
+
+.rela.text
+ *(.rela.text .rela.text.* .rela.gnu.linkonce.t.*)
+
+.rel.fini
+ *(.rel.fini)
+
+.rela.fini
+ *(.rela.fini)
+
+.rel.rodata
+ *(.rel.rodata .rel.rodata.* .rel.gnu.linkonce.r.*)
+
+.rela.rodata
+ *(.rela.rodata .rela.rodata.* .rela.gnu.linkonce.r.*)
+
+.rel.data
+ *(.rel.data .rel.data.* .rel.gnu.linkonce.d.*)
+
+.rela.data
+ *(.rela.data .rela.data.* .rela.gnu.linkonce.d.*)
+
+.rel.tdata
+ *(.rel.tdata .rel.tdata.* .rel.gnu.linkonce.td.*)
+
+.rela.tdata
+ *(.rela.tdata .rela.tdata.* .rela.gnu.linkonce.td.*)
+
+.rel.tbss
+ *(.rel.tbss .rel.tbss.* .rel.gnu.linkonce.tb.*)
+
+.rela.tbss
+ *(.rela.tbss .rela.tbss.* .rela.gnu.linkonce.tb.*)
+
+.rel.ctors
+ *(.rel.ctors)
+
+.rela.ctors
+ *(.rela.ctors)
+
+.rel.dtors
+ *(.rel.dtors)
+
+.rela.dtors
+ *(.rela.dtors)
+
+.rel.got
+ *(.rel.got)
+
+.rela.got
+ *(.rela.got)
+
+.rela.got1
+ *(.rela.got1)
+
+.rela.got2
+ *(.rela.got2)
+
+.rel.sdata
+ *(.rel.sdata .rel.sdata.* .rel.gnu.linkonce.s.*)
+
+.rela.sdata
+ *(.rela.sdata .rela.sdata.* .rela.gnu.linkonce.s.*)
+
+.rel.sbss
+ *(.rel.sbss .rel.sbss.* .rel.gnu.linkonce.sb.*)
+
+.rela.sbss
+ *(.rela.sbss .rela.sbss.* .rel.gnu.linkonce.sb.*)
+
+.rel.sdata2
+ *(.rel.sdata2 .rel.sdata2.* .rel.gnu.linkonce.s2.*)
+
+.rela.sdata2
+ *(.rela.sdata2 .rela.sdata2.* .rela.gnu.linkonce.s2.*)
+
+.rel.sbss2
+ *(.rel.sbss2 .rel.sbss2.* .rel.gnu.linkonce.sb2.*)
+
+.rela.sbss2
+ *(.rela.sbss2 .rela.sbss2.* .rela.gnu.linkonce.sb2.*)
+
+.rel.bss
+ *(.rel.bss .rel.bss.* .rel.gnu.linkonce.b.*)
+
+.rela.bss
+ *(.rela.bss .rela.bss.* .rela.gnu.linkonce.b.*)
+
+.rel.plt
+ *(.rel.plt)
+
+.rela.plt
+ *(.rela.plt)
+
+.text           0x0000000080003100     0x28a0
+ *(.text)
+ .text          0x0000000080003100       0x58 restgpr_x.o
+                0x0000000080003100                _restgpr_14_x
+                0x0000000080003104                _restgpr_15_x
+                0x0000000080003108                _restgpr_16_x
+                0x000000008000310c                _restgpr_17_x
+                0x0000000080003110                _restgpr_18_x
+                0x0000000080003114                _restgpr_19_x
+                0x0000000080003118                _restgpr_20_x
+                0x000000008000311c                _restgpr_21_x
+                0x0000000080003120                _restgpr_22_x
+                0x0000000080003124                _restgpr_23_x
+                0x0000000080003128                _restgpr_24_x
+                0x000000008000312c                _restgpr_25_x
+                0x0000000080003130                _restgpr_26_x
+                0x0000000080003134                _restgpr_27_x
+                0x0000000080003138                _restgpr_28_x
+                0x000000008000313c                _restgpr_29_x
+                0x0000000080003140                _restgpr_30_x
+                0x0000000080003144                _restgpr_31_x
+ .text          0x0000000080003158       0xb8 charlieton_sell_price_patches.o
+                0x0000000080003158                CharlietonPitPriceListPatchStart
+                0x0000000080003178                CharlietonPitPriceListPatchEnd
+                0x0000000080003178                CharlietonPitPriceItemPatchStart
+                0x00000000800031b8                CharlietonRogueportPriceListPatchStart
+                0x00000000800031b8                CharlietonPitPriceItemPatchEnd
+                0x00000000800031dc                CharlietonRogueportPriceItemPatchStart
+                0x00000000800031dc                CharlietonRogueportPriceListPatchEnd
+                0x000000008000320c                CharlietonRogueportPriceItemPatchEnd
+ *(.text.*)
+ .text._ZZN3mod3Mod4InitEvENUlvE0_4_FUNEv
+                0x0000000080003210        0x4 mod.o
+ .text._ZZN3mod3Mod11UpdateEarlyEvENUlN4ttyd7dispdrv12DisplayLayerEPvE_4_FUNES3_S4_
+                0x0000000080003214        0x8 mod.o
+ .text._ZZN3mod3Mod4InitEvENUlPN4ttyd6seqdrv7SeqInfoEE1_4_FUNES4_
+                0x000000008000321c       0x20 mod.o
+                                         0x10 (size before relaxing)
+ .text._ZN3mod3ModC2Ev
+                0x000000008000323c       0x28 mod.o
+                0x000000008000323c                _ZN3mod3ModC2Ev
+                0x000000008000323c                _ZN3mod3ModC1Ev
+ .text._ZN3mod3Mod4InitEv
+                0x0000000080003264      0x158 mod.o
+                                        0x128 (size before relaxing)
+                0x0000000080003264                _ZN3mod3Mod4InitEv
+ .text.startup._ZN3mod4mainEv
+                0x00000000800033bc       0x38 mod.o
+                0x00000000800033bc                _ZN3mod4mainEv
+ .text._ZN3mod3Mod11UpdateEarlyEv
+                0x00000000800033f4       0x5c mod.o
+                                         0x4c (size before relaxing)
+                0x00000000800033f4                _ZN3mod3Mod11UpdateEarlyEv
+ .text._ZZN3mod3Mod4InitEvENUlvE_4_FUNEv
+                0x0000000080003450        0xc mod.o
+ .text._ZN3mod10shufflizer12_GLOBAL__N_120ShouldTickOrAutotickEl
+                0x000000008000345c       0x5c shufflizer_menu.o
+ .text._ZN3mod10shufflizer12_GLOBAL__N_110DrawStringEPKcllmf.constprop.1
+                0x00000000800034b8       0xd8 shufflizer_menu.o
+                                         0x88 (size before relaxing)
+ .text._ZN3mod10shufflizer14ShufflizerMenuC2EPNS0_17ShufflizerOptionsE
+                0x0000000080003590        0x8 shufflizer_menu.o
+                0x0000000080003590                _ZN3mod10shufflizer14ShufflizerMenuC1EPNS0_17ShufflizerOptionsE
+                0x0000000080003590                _ZN3mod10shufflizer14ShufflizerMenuC2EPNS0_17ShufflizerOptionsE
+ .text._ZN3mod10shufflizer14ShufflizerMenu6UpdateEv
+                0x0000000080003598      0x2ac shufflizer_menu.o
+                                        0x29c (size before relaxing)
+                0x0000000080003598                _ZN3mod10shufflizer14ShufflizerMenu6UpdateEv
+ .text._ZN3mod10shufflizer14ShufflizerMenu4DrawEv
+                0x0000000080003844      0x310 shufflizer_menu.o
+                                        0x2d0 (size before relaxing)
+                0x0000000080003844                _ZN3mod10shufflizer14ShufflizerMenu4DrawEv
+ .text._ZN3mod6common14GetCurrentAreaEv
+                0x0000000080003b54       0x20 common.o
+                0x0000000080003b54                _ZN3mod6common14GetCurrentAreaEv
+ .text._ZN3mod6common13GetCurrentMapEv
+                0x0000000080003b74       0x20 common.o
+                0x0000000080003b74                _ZN3mod6common13GetCurrentMapEv
+ .text._ZN3mod6common11GetFilenameEv
+                0x0000000080003b94       0x20 common.o
+                0x0000000080003b94                _ZN3mod6common11GetFilenameEv
+ .text._ZN3mod6common14GetPitSequenceEv
+                0x0000000080003bb4       0x24 common.o
+                0x0000000080003bb4                _ZN3mod6common14GetPitSequenceEv
+ .text._ZN3mod6common17GetSavedFlagValueEl
+                0x0000000080003bd8       0x48 common.o
+                0x0000000080003bd8                _ZN3mod6common17GetSavedFlagValueEl
+ .text._ZN3mod10shufflizer18ShufflizerSeedRandEm
+                0x0000000080003c20        0xc shufflizer_common.o
+                0x0000000080003c20                _ZN3mod10shufflizer18ShufflizerSeedRandEm
+ .text._ZN3mod10shufflizer14ShufflizerRandEl
+                0x0000000080003c2c       0x40 shufflizer_common.o
+                0x0000000080003c2c                _ZN3mod10shufflizer14ShufflizerRandEl
+ .text._ZN3mod10shufflizer27CreateItemArrayFromBitfieldEPKmS2_Psl
+                0x0000000080003c6c       0x50 shufflizer_common.o
+                0x0000000080003c6c                _ZN3mod10shufflizer27CreateItemArrayFromBitfieldEPKmS2_Psl
+ .text._ZN3mod10shufflizer25GetRandomItemFromBitfieldEPKmS2_l
+                0x0000000080003cbc       0xc8 shufflizer_common.o
+                0x0000000080003cbc                _ZN3mod10shufflizer25GetRandomItemFromBitfieldEPKmS2_l
+ .text._ZN3mod10shufflizer30GetFieldItemIndexFromSavedFlagEPKNS0_12SavedFlagRowES3_l
+                0x0000000080003d84       0x58 shufflizer_common.o
+                0x0000000080003d84                _ZN3mod10shufflizer30GetFieldItemIndexFromSavedFlagEPKNS0_12SavedFlagRowES3_l
+ .text._ZN3mod10shufflizer26GetLevelFactorFromPitFloorEl
+                0x0000000080003ddc       0x50 shufflizer_common.o
+                0x0000000080003ddc                _ZN3mod10shufflizer26GetLevelFactorFromPitFloorEl
+ .text._ZN3mod10shufflizer25ApplyPitBalanceParametersElllNS0_20PitBalanceParametersE
+                0x0000000080003e2c       0x54 shufflizer_common.o
+                0x0000000080003e2c                _ZN3mod10shufflizer25ApplyPitBalanceParametersElllNS0_20PitBalanceParametersE
+ .text._ZN3mod10shufflizer22GetPitNpcTypeFromFloorEl
+                0x0000000080003e80       0x50 shufflizer_common.o
+                0x0000000080003e80                _ZN3mod10shufflizer22GetPitNpcTypeFromFloorEl
+ .text._Znwj    0x0000000080003ed0       0x1c cxx.o
+                                          0xc (size before relaxing)
+                0x0000000080003ed0                _Znwj
+ .text._Znaj    0x0000000080003eec        0x4 cxx.o
+                0x0000000080003eec                _Znaj
+ .text._ZN3mod5patch11WriteBranchEPvS1_
+                0x0000000080003ef0       0x68 patch.o
+                                         0x48 (size before relaxing)
+                0x0000000080003ef0                _ZN3mod5patch11WriteBranchEPvS1_
+ .text._ZN3mod5patch10WritePatchEPvS1_m
+                0x0000000080003f58       0x6c patch.o
+                                         0x3c (size before relaxing)
+                0x0000000080003f58                _ZN3mod5patch10WritePatchEPvS1_m
+ .text._ZN3mod5patch10WritePatchEPvS1_S1_
+                0x0000000080003fc4        0x8 patch.o
+                0x0000000080003fc4                _ZN3mod5patch10WritePatchEPvS1_S1_
+ .text._ZN3mod10shufflizer12_GLOBAL__N_140ApplyPitBalanceParametersForCurrentFloorElNS0_20PitBalanceParametersERKNS0_9SeedStateE
+                0x0000000080003fcc       0x74 shufflizer.o
+ .text._ZZN3mod10shufflizer10Shufflizer4InitEvENUlPvE3_4_FUNES2_
+                0x0000000080004040       0x50 shufflizer.o
+ .text._ZZN3mod10shufflizer10Shufflizer4InitEvENUlPvE4_4_FUNES2_
+                0x0000000080004090       0x3c shufflizer.o
+ .text._ZZN3mod10shufflizer10Shufflizer4InitEvENUlPKcE9_4_FUNES3_
+                0x00000000800040cc       0xd0 shufflizer.o
+                                         0xc0 (size before relaxing)
+ .text._ZN3mod10shufflizer10ShufflizerC2Ev
+                0x000000008000419c       0x74 shufflizer.o
+                                         0x64 (size before relaxing)
+                0x000000008000419c                _ZN3mod10shufflizer10ShufflizerC2Ev
+                0x000000008000419c                _ZN3mod10shufflizer10ShufflizerC1Ev
+ .text._ZN3mod10shufflizer10Shufflizer14OnModuleLoadedEPN4ttyd6oslink12OSModuleInfoE
+                0x0000000080004210      0x2bc shufflizer.o
+                0x0000000080004210                _ZN3mod10shufflizer10Shufflizer14OnModuleLoadedEPN4ttyd6oslink12OSModuleInfoE
+ .text._ZZN3mod10shufflizer10Shufflizer4InitEvENUlPN4ttyd6oslink12OSModuleInfoEPvE1_4_FUNES5_S6_
+                0x00000000800044cc       0x54 shufflizer.o
+ .text._ZN3mod10shufflizer10Shufflizer18ReplaceGeneralItemEsl
+                0x0000000080004520      0x144 shufflizer.o
+                                        0x124 (size before relaxing)
+                0x0000000080004520                _ZN3mod10shufflizer10Shufflizer18ReplaceGeneralItemEsl
+ .text._ZZN3mod10shufflizer10Shufflizer4InitEvENUlPKcmmlPvfffE2_4_FUNES3_mmlS4_fff
+                0x0000000080004664       0x98 shufflizer.o
+ .text._ZN3mod10shufflizer10Shufflizer16ReplaceChestItemEPv
+                0x00000000800046fc       0xe8 shufflizer.o
+                                         0xd8 (size before relaxing)
+                0x00000000800046fc                _ZN3mod10shufflizer10Shufflizer16ReplaceChestItemEPv
+ .text._ZZN3mod10shufflizer10Shufflizer4InitEvENUlPvS2_E5_4_FUNES2_S2_
+                0x00000000800047e4       0x78 shufflizer.o
+ .text._ZN3mod10shufflizer10Shufflizer22AlterDamageCalculationEPvS2_S2_PN4ttyd6common12AttackParamsES2_m
+                0x000000008000485c      0x1f0 shufflizer.o
+                                        0x1e0 (size before relaxing)
+                0x000000008000485c                _ZN3mod10shufflizer10Shufflizer22AlterDamageCalculationEPvS2_S2_PN4ttyd6common12AttackParamsES2_m
+ .text._ZZN3mod10shufflizer10Shufflizer4InitEvENUlPvS2_S2_PN4ttyd6common12AttackParamsES2_mE6_4_FUNES2_S2_S2_S6_S2_m
+                0x0000000080004a4c       0x24 shufflizer.o
+ .text._ZN3mod10shufflizer10Shufflizer24AlterFpDamageCalculationEPvS2_S2_PN4ttyd6common12AttackParamsES2_m
+                0x0000000080004a70      0x114 shufflizer.o
+                                        0x104 (size before relaxing)
+                0x0000000080004a70                _ZN3mod10shufflizer10Shufflizer24AlterFpDamageCalculationEPvS2_S2_PN4ttyd6common12AttackParamsES2_m
+ .text._ZZN3mod10shufflizer10Shufflizer4InitEvENUlPvS2_S2_PN4ttyd6common12AttackParamsES2_mE7_4_FUNES2_S2_S2_S6_S2_m
+                0x0000000080004b84       0x24 shufflizer.o
+ .text._ZN3mod10shufflizer10Shufflizer15AlterHpAndLevelEPN4ttyd11battle_unit19BattlePartySlotInfoE
+                0x0000000080004ba8      0x118 shufflizer.o
+                                        0x108 (size before relaxing)
+                0x0000000080004ba8                _ZN3mod10shufflizer10Shufflizer15AlterHpAndLevelEPN4ttyd11battle_unit19BattlePartySlotInfoE
+ .text._ZZN3mod10shufflizer10Shufflizer4InitEvENUlPN4ttyd11battle_unit19BattlePartySlotInfoEffE8_4_FUNES5_ff
+                0x0000000080004cc0       0x58 shufflizer.o
+ .text._ZN3mod10shufflizer10Shufflizer4InitEv
+                0x0000000080004d18      0x50c shufflizer.o
+                                        0x4dc (size before relaxing)
+                0x0000000080004d18                _ZN3mod10shufflizer10Shufflizer4InitEv
+ .text._ZN3mod10shufflizer10Shufflizer6UpdateEv
+                0x0000000080005224       0x34 shufflizer.o
+                0x0000000080005224                _ZN3mod10shufflizer10Shufflizer6UpdateEv
+ .text._ZN3mod10shufflizer10Shufflizer4DrawEv
+                0x0000000080005258        0x8 shufflizer.o
+                0x0000000080005258                _ZN3mod10shufflizer10Shufflizer4DrawEv
+ .text._ZN3mod10shufflizer10Shufflizer21InitializeShuffleSeedEv
+                0x0000000080005260      0x614 shufflizer.o
+                                        0x5f4 (size before relaxing)
+                0x0000000080005260                _ZN3mod10shufflizer10Shufflizer21InitializeShuffleSeedEv
+ .text._ZZN3mod10shufflizer10Shufflizer4InitEvENUlvE_4_FUNEv
+                0x0000000080005874       0x34 shufflizer.o
+ .text._ZZN3mod10shufflizer10Shufflizer4InitEvENUlmE0_4_FUNEm
+                0x00000000800058a8       0x34 shufflizer.o
+ .text._prolog  0x00000000800058dc       0x5c rel.o
+                0x00000000800058dc                _prolog
+ .text._epilog  0x0000000080005938       0x4c rel.o
+                0x0000000080005938                _epilog
+ .text._unresolved
+                0x0000000080005984        0x4 rel.o
+                0x0000000080005984                _unresolved
+ *(.gnu.warning)
+ *(.gnu.linkonce.t.*)
+                0x00000000800059a0                . = ALIGN (0x20)
+ *fill*         0x0000000080005988       0x18 00000000
+
+.text._ZN3mod10shufflizer12ShuffleRangeIsEEvPT_S3_
+                0x0000000000000000       0x70
+ .text._ZN3mod10shufflizer12ShuffleRangeIsEEvPT_S3_
+                0x0000000000000000       0x70 shufflizer.o
+                                         0x50 (size before relaxing)
+                0x0000000000000000                _ZN3mod10shufflizer12ShuffleRangeIsEEvPT_S3_
+
+.fini           0x0000000000000070       0x10
+ *(.fini)
+                0x0000000000000080                . = ALIGN (0x20)
+ *fill*         0x0000000000000070       0x10 00000000
+                [!provide]                        PROVIDE (__etext = .)
+                [!provide]                        PROVIDE (_etext = .)
+                [!provide]                        PROVIDE (etext = .)
+
+.rodata         0x0000000000000080      0x3e2
+ *(.rodata)
+ .rodata        0x0000000000000080        0xa shufflizer_common.o
+ *fill*         0x000000000000008a        0x2 
+ .rodata        0x000000000000008c       0x28 shufflizer.o
+ *(.rodata.*)
+ .rodata._ZN3mod10shufflizer12_GLOBAL__N_110DrawStringEPKcllmf.constprop.1.cst4
+                0x00000000000000b4        0x8 shufflizer_menu.o
+ .rodata._ZN3mod10shufflizer14ShufflizerMenu4DrawEv.cst4
+                0x00000000000000bc       0x24 shufflizer_menu.o
+ .rodata._ZN3mod10shufflizer14ShufflizerMenu4DrawEv.str1.1
+                0x00000000000000e0       0xae shufflizer_menu.o
+ *fill*         0x000000000000018e        0x2 
+ .rodata._ZN3mod6common22kPitModuleNpcArrOffsetE
+                0x0000000000000190        0x4 common.o
+                0x0000000000000190                _ZN3mod6common22kPitModuleNpcArrOffsetE
+ .rodata._ZN3mod6common23kSavedWordFlagBaseValueE
+                0x0000000000000194        0x4 common.o
+                0x0000000000000194                _ZN3mod6common23kSavedWordFlagBaseValueE
+ .rodata._ZN3mod6common27kObjectChestScriptPtrOffsetE
+                0x0000000000000198        0x4 common.o
+                0x0000000000000198                _ZN3mod6common27kObjectChestScriptPtrOffsetE
+ .rodata._ZN3mod6common27kObjectCollectionExprOffsetE
+                0x000000000000019c        0x4 common.o
+                0x000000000000019c                _ZN3mod6common27kObjectCollectionExprOffsetE
+ .rodata._ZN3mod6common32kUltraHammerChestDespawnIdOffsetE
+                0x00000000000001a0        0x4 common.o
+                0x00000000000001a0                _ZN3mod6common32kUltraHammerChestDespawnIdOffsetE
+ .rodata._ZN3mod10shufflizer10Shufflizer14OnModuleLoadedEPN4ttyd6oslink12OSModuleInfoE
+                0x00000000000001a4       0x64 shufflizer.o
+ .rodata._ZN3mod10shufflizer10Shufflizer16ReplaceChestItemEPv.str1.1
+                0x0000000000000208        0xc shufflizer.o
+ .rodata._ZN3mod10shufflizer10Shufflizer18ReplaceGeneralItemEsl.str1.1
+                0x0000000000000214       0x15 shufflizer.o
+ *fill*         0x0000000000000229        0x3 
+ .rodata._ZN3mod10shufflizer12_GLOBAL__N_1L10kShopItemsE
+                0x000000000000022c       0x18 shufflizer.o
+ .rodata._ZN3mod10shufflizer12_GLOBAL__N_1L11kFieldItemsE
+                0x0000000000000244        0x8 shufflizer.o
+ .rodata._ZN3mod10shufflizer12_GLOBAL__N_1L11kSavedFlagsE
+                0x000000000000024c       0xdc shufflizer.o
+ .rodata._ZN3mod10shufflizer12_GLOBAL__N_1L12kShopOffsetsE
+                0x0000000000000328       0x28 shufflizer.o
+ .rodata._ZN3mod10shufflizer12_GLOBAL__N_1L14kOneCopyBadgesE
+                0x0000000000000350        0xc shufflizer.o
+ .rodata._ZN3mod10shufflizer12_GLOBAL__N_1L14kTwoCopyBadgesE
+                0x000000000000035c        0xc shufflizer.o
+ .rodata._ZN3mod10shufflizer12_GLOBAL__N_1L16kHpBalanceParamsE
+                0x0000000000000368        0x4 shufflizer.o
+ .rodata._ZN3mod10shufflizer12_GLOBAL__N_1L17kAtkBalanceParamsE
+                0x000000000000036c        0x4 shufflizer.o
+ .rodata._ZN3mod10shufflizer12_GLOBAL__N_1L17kDefBalanceParamsE
+                0x0000000000000370        0x4 shufflizer.o
+ .rodata._ZN3mod10shufflizer12_GLOBAL__N_1L19kLevelBalanceParamsE
+                0x0000000000000374        0x4 shufflizer.o
+ .rodata._ZZN3mod10shufflizer10Shufflizer4InitEvENUlPKcE9_4_FUNES3_.str1.1
+                0x0000000000000378       0xea shufflizer.o
+ *(.gnu.linkonce.r.*)
+
+.rodata1
+ *(.rodata1)
+
+.sdata2         0x0000000000000462        0x0
+                [!provide]                        PROVIDE (_SDA2_BASE_ = .)
+ *(.sdata2)
+ *(.sdata2.*)
+ *(.gnu.linkonce.s2.*)
+
+.sbss2
+ *(.sbss2)
+ *(.sbss2.*)
+ *(.gnu.linkonce.sb2.*)
+                0x0000000000000464                . = ALIGN (0x4)
+                [!provide]                        PROVIDE (__preinit_array_start = .)
+
+.preinit_array
+ *(.preinit_array)
+                [!provide]                        PROVIDE (__preinit_array_end = .)
+                [!provide]                        PROVIDE (__init_array_start = .)
+
+.init_array
+ *(.init_array)
+                [!provide]                        PROVIDE (__init_array_end = .)
+                [!provide]                        PROVIDE (__fini_array_start = .)
+
+.fini_array
+ *(.fini_array)
+                [!provide]                        PROVIDE (__fini_array_end = .)
+
+.data           0x0000000000000464       0x5c
+ *(.data)
+ *(.data.*)
+ .data._ZN3mod10shufflizer12_GLOBAL__N_111menu_state_E
+                0x0000000000000464        0x4 shufflizer_menu.o
+ .data._ZN3mod10shufflizer12_GLOBAL__N_117time_button_held_E
+                0x0000000000000468        0x4 shufflizer_menu.o
+ .data._ZN3mod6common12kHowzItemArrE
+                0x000000000000046c        0x4 common.o
+                0x000000000000046c                _ZN3mod6common12kHowzItemArrE
+ .data._ZN3mod6common12kItemDataArrE
+                0x0000000000000470        0x4 common.o
+                0x0000000000000470                _ZN3mod6common12kItemDataArrE
+ .data._ZN3mod6common12kSaveDataPtrE
+                0x0000000000000474        0x4 common.o
+                0x0000000000000474                _ZN3mod6common12kSaveDataPtrE
+ .data._ZN3mod6common14kDazzleItemArrE
+                0x0000000000000478        0x4 common.o
+                0x0000000000000478                _ZN3mod6common14kDazzleItemArrE
+ .data._ZN3mod6common15kTradeOffParamsE
+                0x000000000000047c        0x4 common.o
+                0x000000000000047c                _ZN3mod6common15kTradeOffParamsE
+ .data._ZN3mod6common17kGulpRecoilParamsE
+                0x0000000000000480        0x4 common.o
+                0x0000000000000480                _ZN3mod6common17kGulpRecoilParamsE
+ .data._ZN3mod6common17kKoopaCurseParamsE
+                0x0000000000000484        0x4 common.o
+                0x0000000000000484                _ZN3mod6common17kKoopaCurseParamsE
+ .data._ZN3mod6common18kCharlietonItemArrE
+                0x0000000000000488        0x4 common.o
+                0x0000000000000488                _ZN3mod6common18kCharlietonItemArrE
+ .data._ZN3mod6common20kPiantaParlorItemArrE
+                0x000000000000048c        0x4 common.o
+                0x000000000000048c                _ZN3mod6common20kPiantaParlorItemArrE
+ .data._ZN3mod6common21kPitCharlietonItemArrE
+                0x0000000000000490        0x4 common.o
+                0x0000000000000490                _ZN3mod6common21kPitCharlietonItemArrE
+ .data._ZN3mod6common24kSuperHammerRecoilParamsE
+                0x0000000000000494        0x4 common.o
+                0x0000000000000494                _ZN3mod6common24kSuperHammerRecoilParamsE
+ .data._ZN3mod6common24kUltraHammerRecoilParamsE
+                0x0000000000000498        0x4 common.o
+                0x0000000000000498                _ZN3mod6common24kUltraHammerRecoilParamsE
+ .data._ZN3mod6common8kNextMapE
+                0x000000000000049c        0x4 common.o
+                0x000000000000049c                _ZN3mod6common8kNextMapE
+ .data._ZN3mod10shufflizer12_GLOBAL__N_115gShineBlockFlagE
+                0x00000000000004a0        0x4 shufflizer.o
+ .data._ZN3mod10shufflizer12_GLOBAL__N_119kTradeOffScriptHookE
+                0x00000000000004a4        0x4 shufflizer.o
+ .data._ZN3mod10shufflizer12_GLOBAL__N_120kEnableHandlerOpcodeE
+                0x00000000000004a8        0x4 shufflizer.o
+ .data._ZN3mod10shufflizer12_GLOBAL__N_121kSkipUHCutsceneOpcodeE
+                0x00000000000004ac        0x4 shufflizer.o
+ .data._ZN3mod10shufflizer12_GLOBAL__N_121kTradeOffRankUpOpcodeE
+                0x00000000000004b0        0x4 shufflizer.o
+ *(.gnu.linkonce.d.*)
+                0x00000000000004c0                . = ALIGN (0x20)
+ *fill*         0x00000000000004b4        0xc 
+
+.data1
+ *(.data1)
+
+.tdata
+ *(.tdata .tdata.* .gnu.linkonce.td.*)
+
+.tbss
+ *(.tbss .tbss.* .gnu.linkonce.tb.*)
+ *(.tcommon)
+
+.eh_frame       0x00000000000004c0      0x7f4
+ *(.eh_frame)
+ .eh_frame      0x00000000000004c0       0xfc mod.o
+ .eh_frame      0x00000000000005bc       0xb8 shufflizer_menu.o
+ .eh_frame      0x0000000000000674       0x78 common.o
+                                         0xa0 (size before relaxing)
+ .eh_frame      0x00000000000006ec       0xcc shufflizer_common.o
+ .eh_frame      0x00000000000007b8       0x3c cxx.o
+                                         0x64 (size before relaxing)
+ .eh_frame      0x00000000000007f4       0x70 patch.o
+ .eh_frame      0x0000000000000864      0x3d8 shufflizer.o
+ .eh_frame      0x0000000000000c3c       0x78 rel.o
+
+.gcc_except_table
+ *(.gcc_except_table)
+
+.fixup
+ *(.fixup)
+
+.got1
+ *(.got1)
+
+.got2
+ *(.got2)
+
+.dynamic
+ *(.dynamic)
+
+.ctors          0x0000000000000cb4        0xc
+ *crtbegin.o(.ctors)
+ *(EXCLUDE_FILE(*crtend.o) .ctors)
+ *(SORT_BY_NAME(.ctors.*))
+ *(.ctors)
+                0x0000000000000cc0                . = ALIGN (0x20)
+ *fill*         0x0000000000000cb4        0xc 
+
+.dtors          0x0000000000000cc0        0x0
+ *crtbegin.o(.dtors)
+ *(EXCLUDE_FILE(*crtend.o) .dtors)
+ *(SORT_BY_NAME(.dtors.*))
+ *(.dtors)
+                0x0000000000000cc0                . = ALIGN (0x20)
+
+.jcr
+ *(.jcr)
+
+.got
+ *(.got.plt)
+ *(.got)
+
+.sdata          0x0000000000000cc0        0x0
+                [!provide]                        PROVIDE (_SDA_BASE_ = .)
+ *(.sdata)
+ *(.sdata.*)
+ *(.gnu.linkonce.s.*)
+                0x0000000000000cc0                . = ALIGN (0x20)
+                0x0000000000000cc0                _edata = .
+                [!provide]                        PROVIDE (edata = .)
+
+.sbss           0x0000000000000cc0        0x0
+                0x0000000000000cc0                __sbss_start = .
+                [!provide]                        PROVIDE (__sbss_start = .)
+                [!provide]                        PROVIDE (___sbss_start = .)
+ *(.dynsbss)
+ *(.sbss)
+ *(.sbss.*)
+ *(.gnu.linkonce.sb.*)
+ *(.scommon)
+                [!provide]                        PROVIDE (__sbss_end = .)
+                [!provide]                        PROVIDE (___sbss_end = .)
+                0x0000000000000cc0                . = ALIGN (0x20)
+                0x0000000000000cc0                __sbss_end = .
+
+.bss            0x0000000000000cc0       0x40
+                0x0000000000000cc0                __bss_start = .
+                [!provide]                        PROVIDE (__bss_start = .)
+ *(.dynbss)
+ *(.bss)
+ *(.bss.*)
+ .bss._ZN3mod4gModE
+                0x0000000000000cc0        0x4 mod.o
+                0x0000000000000cc0                _ZN3mod4gModE
+ .bss._ZN3mod10shufflizer12_GLOBAL__N_113last_command_E
+                0x0000000000000cc4        0x2 shufflizer_menu.o
+ *fill*         0x0000000000000cc6        0x2 
+ .bss._ZN3mod10shufflizer12_GLOBAL__N_119ShufflizerRandStateE
+                0x0000000000000cc8        0x4 shufflizer_common.o
+ .bss._ZN3mod10shufflizer12_GLOBAL__N_117gInItemBoxRoutineE
+                0x0000000000000ccc        0x1 shufflizer.o
+ *fill*         0x0000000000000ccd        0x3 
+ .bss._ZN3mod10shufflizer12_GLOBAL__N_121g_Relocate_trampolineE
+                0x0000000000000cd0        0x4 shufflizer.o
+ .bss._ZN3mod10shufflizer12_GLOBAL__N_122g_itemEntry_trampolineE
+                0x0000000000000cd4        0x4 shufflizer.o
+ .bss._ZN3mod10shufflizer12_GLOBAL__N_122g_msgSearch_trampolineE
+                0x0000000000000cd8        0x4 shufflizer.o
+ .bss._ZN3mod10shufflizer12_GLOBAL__N_125g_mobjRunEvent_trampolineE
+                0x0000000000000cdc        0x4 shufflizer.o
+ .bss._ZN3mod10shufflizer12_GLOBAL__N_125g_mobj_itembox_trampolineE
+                0x0000000000000ce0        0x4 shufflizer.o
+ .bss._ZN3mod10shufflizer12_GLOBAL__N_125g_stg0_00_init_trampolineE
+                0x0000000000000ce4        0x4 shufflizer.o
+ .bss._ZN3mod10shufflizer12_GLOBAL__N_126g_BtlUnit_Entry_trampolineE
+                0x0000000000000ce8        0x4 shufflizer.o
+ .bss._ZN3mod10shufflizer12_GLOBAL__N_126g_cardCopy2Main_trampolineE
+                0x0000000000000cec        0x4 shufflizer.o
+ .bss._ZN3mod10shufflizer12_GLOBAL__N_128g_mobj_powerupblk_trampolineE
+                0x0000000000000cf0        0x4 shufflizer.o
+ .bss._ZN3mod10shufflizer12_GLOBAL__N_134g_BattleCalculateDamage_trampolineE
+                0x0000000000000cf4        0x4 shufflizer.o
+ .bss._ZN3mod10shufflizer12_GLOBAL__N_136g_BattleCalculateFpDamage_trampolineE
+                0x0000000000000cf8        0x4 shufflizer.o
+ .bss._ZN3mod10shufflizer12_GLOBAL__N_15gSelfE
+                0x0000000000000cfc        0x4 shufflizer.o
+ *(.gnu.linkonce.b.*)
+ *(COMMON)
+                0x0000000000000d00                . = ALIGN (0x20)
+                [!provide]                        PROVIDE (__bss_end = .)
+                0x0000000000000d00                __bss_end = .
+                0x0000000000000d00                _end = .
+                [!provide]                        PROVIDE (end = .)
+
+.stab
+ *(.stab)
+
+.stabstr
+ *(.stabstr)
+
+.stab.excl
+ *(.stab.excl)
+
+.stab.exclstr
+ *(.stab.exclstr)
+
+.stab.index
+ *(.stab.index)
+
+.stab.indexstr
+ *(.stab.indexstr)
+
+.comment        0x0000000000000000      0x118
+ *(.comment)
+ .comment       0x0000000000000000       0x23 mod.o
+ .comment       0x0000000000000023       0x23 shufflizer_menu.o
+ .comment       0x0000000000000046       0x23 common.o
+ .comment       0x0000000000000069       0x23 shufflizer_common.o
+ .comment       0x000000000000008c       0x23 cxx.o
+ .comment       0x00000000000000af       0x23 patch.o
+ .comment       0x00000000000000d2       0x23 shufflizer.o
+ .comment       0x00000000000000f5       0x23 rel.o
+
+.gnu.attributes
+                0x0000000000000000       0x10
+ .gnu.attributes
+                0x0000000000000000       0x10 shufflizer_menu.o
+ .gnu.attributes
+                0x0000000000000010       0x10 shufflizer.o
+
+.group          0x0000000000000000        0xc
+ .group         0x0000000000000000        0xc shufflizer.o
+
+.debug
+ *(.debug)
+
+.line
+ *(.line)
+
+.debug_srcinfo
+ *(.debug_srcinfo)
+
+.debug_sfnames
+ *(.debug_sfnames)
+
+.debug_aranges  0x0000000000000000      0x2a0
+ *(.debug_aranges)
+ .debug_aranges
+                0x0000000000000000       0x58 mod.o
+ .debug_aranges
+                0x0000000000000058       0x40 shufflizer_menu.o
+ .debug_aranges
+                0x0000000000000098       0x50 common.o
+ .debug_aranges
+                0x00000000000000e8       0x58 shufflizer_common.o
+ .debug_aranges
+                0x0000000000000140       0x28 cxx.o
+ .debug_aranges
+                0x0000000000000168       0x30 patch.o
+ .debug_aranges
+                0x0000000000000198       0xd8 shufflizer.o
+ .debug_aranges
+                0x0000000000000270       0x30 rel.o
+
+.debug_pubnames
+ *(.debug_pubnames)
+
+.debug_info     0x0000000000000000     0xb5fb
+ *(.debug_info)
+ .debug_info    0x0000000000000000     0x1a8b mod.o
+ .debug_info    0x0000000000001a8b     0x24e5 shufflizer_menu.o
+ .debug_info    0x0000000000003f70      0xe9e common.o
+ .debug_info    0x0000000000004e0e      0x7cd shufflizer_common.o
+ .debug_info    0x00000000000055db      0x3a8 cxx.o
+ .debug_info    0x0000000000005983      0x509 patch.o
+ .debug_info    0x0000000000005e8c     0x567c shufflizer.o
+ .debug_info    0x000000000000b508       0xf3 rel.o
+
+.debug_abbrev   0x0000000000000000     0x193d
+ *(.debug_abbrev)
+ .debug_abbrev  0x0000000000000000      0x4c7 mod.o
+ .debug_abbrev  0x00000000000004c7      0x5b0 shufflizer_menu.o
+ .debug_abbrev  0x0000000000000a77      0x20c common.o
+ .debug_abbrev  0x0000000000000c83      0x227 shufflizer_common.o
+ .debug_abbrev  0x0000000000000eaa      0x144 cxx.o
+ .debug_abbrev  0x0000000000000fee      0x176 patch.o
+ .debug_abbrev  0x0000000000001164      0x70d shufflizer.o
+ .debug_abbrev  0x0000000000001871       0xcc rel.o
+
+.debug_line     0x0000000000000000     0x34fc
+ *(.debug_line)
+ .debug_line    0x0000000000000000      0x498 mod.o
+ .debug_line    0x0000000000000498      0x8b3 shufflizer_menu.o
+ .debug_line    0x0000000000000d4b      0x389 common.o
+ .debug_line    0x00000000000010d4      0x54e shufflizer_common.o
+ .debug_line    0x0000000000001622      0x19f cxx.o
+ .debug_line    0x00000000000017c1      0x269 patch.o
+ .debug_line    0x0000000000001a2a     0x196c shufflizer.o
+ .debug_line    0x0000000000003396      0x166 rel.o
+
+.debug_frame
+ *(.debug_frame)
+
+.debug_str      0x0000000000000000     0x8fc9
+ *(.debug_str)
+ .debug_str     0x0000000000000000     0x14d8 mod.o
+ .debug_str     0x00000000000014d8     0x17cf shufflizer_menu.o
+ .debug_str     0x0000000000002ca7     0x103b common.o
+ .debug_str     0x0000000000003ce2      0x6fc shufflizer_common.o
+ .debug_str     0x00000000000043de      0x3ad cxx.o
+ .debug_str     0x000000000000478b      0x403 patch.o
+ .debug_str     0x0000000000004b8e     0x426b shufflizer.o
+ .debug_str     0x0000000000008df9      0x1d0 rel.o
+
+.debug_loc      0x0000000000000000     0x2ba3
+ *(.debug_loc)
+ .debug_loc     0x0000000000000000      0x160 mod.o
+ .debug_loc     0x0000000000000160      0x4fa shufflizer_menu.o
+ .debug_loc     0x000000000000065a      0x13d common.o
+ .debug_loc     0x0000000000000797      0x3ee shufflizer_common.o
+ .debug_loc     0x0000000000000b85       0x64 cxx.o
+ .debug_loc     0x0000000000000be9      0x2e1 patch.o
+ .debug_loc     0x0000000000000eca     0x1c77 shufflizer.o
+ .debug_loc     0x0000000000002b41       0x62 rel.o
+
+.debug_macinfo
+ *(.debug_macinfo)
+
+.debug_weaknames
+ *(.debug_weaknames)
+
+.debug_funcnames
+ *(.debug_funcnames)
+
+.debug_typenames
+ *(.debug_typenames)
+
+.debug_varnames
+ *(.debug_varnames)
+                0x0000000000000000                __isIPL = 0x0
+                0x0000000000020d00                __stack_addr = ((((__bss_start + SIZEOF (.bss)) + 0x20000) + 0x7) & 0xfffffffffffffff8)
+                0x0000000000000d00                __stack_end = (__bss_start + SIZEOF (.bss))
+                0x0000000000024d00                __intrstack_addr = (__stack_addr + 0x4000)
+                0x0000000000020d00                __intrstack_end = __stack_addr
+                0x0000000000024d00                __Arena1Lo = ((__intrstack_addr + 0x1f) & 0xffffffffffffffe0)
+                0x00000000817feff0                __Arena1Hi = 0x817feff0
+                0x00000000817ff000                __gxregs = ((__Arena1Hi + 0x1f) & 0xffffffffffffffe0)
+                [!provide]                        PROVIDE (__stack = 0x817feff0)
+                [!provide]                        PROVIDE (__isIPL = __isIPL)
+                [!provide]                        PROVIDE (__stack_addr = __stack_addr)
+                [!provide]                        PROVIDE (__stack_end = __stack_end)
+                [!provide]                        PROVIDE (__intrstack_addr = __intrstack_addr)
+                [!provide]                        PROVIDE (__intrstack_end = __intrstack_end)
+                [!provide]                        PROVIDE (__Arena1Lo = __Arena1Lo)
+                [!provide]                        PROVIDE (__Arena1Hi = __Arena1Hi)
+                [!provide]                        PROVIDE (__gxregs = __gxregs)
+LOAD C:/Users/test/Desktop/Games/Tools/ttyd-tools-shufflizer-branch/shufflizer/rel/source/cxx.ld
+                0x0000000000000cb4                _ctors_start = ADDR (.ctors)
+                0x0000000000000cc0                _ctors_end = (_ctors_start + SIZEOF (.ctors))
+                0x0000000000000cc0                _dtors_start = ADDR (.dtors)
+                0x0000000000000cc0                _dtors_end = (_dtors_start + SIZEOF (.dtors))
+LOAD mod.o
+LOAD shufflizer_menu.o
+LOAD common.o
+LOAD shufflizer_common.o
+LOAD cxx.o
+LOAD patch.o
+LOAD shufflizer.o
+LOAD rel.o
+LOAD restfpr_x.o
+LOAD restgpr_x.o
+LOAD charlieton_sell_price_patches.o
+LOAD c:/devkitpro/devkitppc/bin/../lib/gcc/powerpc-eabi/8.1.0/../../../../powerpc-eabi/lib\libm.a
+OUTPUT(C:/Users/test/Desktop/Games/Tools/ttyd-tools-shufflizer-branch/shufflizer/rel/rel.us.elf elf32-powerpc)
+
+.debug_ranges   0x0000000000000000      0x930
+ .debug_ranges  0x0000000000000000       0x68 mod.o
+ .debug_ranges  0x0000000000000068       0x90 shufflizer_menu.o
+ .debug_ranges  0x00000000000000f8       0x58 common.o
+ .debug_ranges  0x0000000000000150       0x98 shufflizer_common.o
+ .debug_ranges  0x00000000000001e8       0x18 cxx.o
+ .debug_ranges  0x0000000000000200       0x20 patch.o
+ .debug_ranges  0x0000000000000220      0x6c0 shufflizer.o
+ .debug_ranges  0x00000000000008e0       0x50 rel.o
