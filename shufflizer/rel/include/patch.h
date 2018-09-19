@@ -9,9 +9,9 @@ namespace mod::patch {
 void WriteBranch(void* ptr, void* destination);
 
 void WritePatch(
-    void* destination, void* patch_start, void* patch_end);
+    void* destination, const void* patch_start, const void* patch_end);
 void WritePatch(
-    void* destination, void* patch_start, uint32_t patch_len);
+    void* destination, const void* patch_start, uint32_t patch_len);
 
 template<typename Func, typename Dest>
 Func HookFunction(Func function, Dest destination) {

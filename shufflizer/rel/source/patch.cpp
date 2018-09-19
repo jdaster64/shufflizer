@@ -21,7 +21,7 @@ void WriteBranch(void* ptr, void* destination) {
 }
 
 void WritePatch(
-    void* destination, void* patch_start, void* patch_end) {
+    void* destination, const void* patch_start, const void* patch_end) {
     uint32_t patch_len =
         reinterpret_cast<uintptr_t>(patch_end) -
         reinterpret_cast<uintptr_t>(patch_start);
@@ -29,7 +29,7 @@ void WritePatch(
 }
 
 void WritePatch(
-    void* destination, void* patch_start, uint32_t patch_len) {
+    void* destination, const void* patch_start, uint32_t patch_len) {
     ttyd::system::memcpy_as4(destination, patch_start, patch_len);
     ttyd::OSCache::DCFlushRange(&destination, patch_len);
     ttyd::OSCache::ICInvalidateRange(&destination, patch_len);

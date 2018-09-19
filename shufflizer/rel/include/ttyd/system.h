@@ -6,7 +6,7 @@ namespace ttyd::system {
 
 extern "C" {
 
-void *memcpy_as4(void *dst, void *src, uint32_t size);
+void *memcpy_as4(void *dst, const void *src, uint32_t size);
 // mtxGetRotationElement
 
 float sysMsec2FrameFloat(float milliseconds);

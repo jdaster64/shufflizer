@@ -228,7 +228,7 @@ int32_t IsRecoilAttack(AttackParams* attack_params) {
 Shufflizer* gSelf = nullptr;
 void (*g_stg0_00_init_trampoline)() = nullptr;
 void (*g_cardCopy2Main_trampoline)(uint32_t) = nullptr;
-bool (*g_Relocate_trampoline)(OSModuleInfo*, void*) = nullptr;
+bool (*g_OSLink_trampoline)(OSModuleInfo*, void*) = nullptr;
 void* (*g_itemEntry_trampoline)(
     const char*, uint32_t, uint32_t, int32_t, void*, float, float, float) = nullptr;
 int32_t (*g_mobj_powerupblk_trampoline)(void*) = nullptr;
@@ -785,9 +785,9 @@ void Shufflizer::Init() {
         
     // ROOM INITIALIZATION:
     // Run code on loading a new module.
-    g_Relocate_trampoline = patch::HookFunction(
-        ttyd::oslink::Relocate, [](OSModuleInfo* new_module, void* bss) {
-            bool result = g_Relocate_trampoline(new_module, bss);
+    g_OSLink_trampoline = patch::HookFunction(
+        ttyd::oslink::OSLink, [](OSModuleInfo* new_module, void* bss) {
+            bool result = g_OSLink_trampoline(new_module, bss);
             if (new_module != nullptr && result) {
                 gSelf->OnModuleLoaded(new_module);
             }
@@ -909,12 +909,14 @@ void Shufflizer::Init() {
         reinterpret_cast<void*>(CharlietonPitPriceItemPatchEnd));
     
     // Remove the cutscenes for picking up Ultra Hammer and similar upgrades.
-    *kSkipUHCutsceneOpcode = 0x48000030;  // b 0x0030
-    ttyd::OSCache::ICInvalidateRange(&kSkipUHCutsceneOpcode, sizeof(uint32_t));
+    const uint32_t skip_cutscene_opcode = 0x48000030;     // b 0x0030
+    mod::patch::WritePatch(
+        kSkipUHCutsceneOpcode, &skip_cutscene_opcode, sizeof(uint32_t));
     
     // Change Trade Off's rank up amount to +10 levels instead of 5.
-    *kTradeOffRankUpOpcode = 0x3804000A;  // addi r0, r4, 10
-    ttyd::OSCache::ICInvalidateRange(&kTradeOffRankUpOpcode, sizeof(uint32_t));
+    const uint32_t trade_off_rankup_opcode = 0x3804000A;  // addi r0, r4, 10
+    mod::patch::WritePatch(
+        kTradeOffRankUpOpcode, &trade_off_rankup_opcode, sizeof(uint32_t));
     
     // Change Trade Off to have a 100% chance of inflicting +3 ATK for 9 turns.
     common::kTradeOffParams->atk_change_chance      = 100;
@@ -927,14 +929,15 @@ void Shufflizer::Init() {
         0xFE363C8C, 0x0001005E, 0x803652B8, 0x00000002, 0x00000001
     };
     mod::patch::WritePatch(
-        &kTradeOffScriptHook, script_opcodes, sizeof(script_opcodes));
+        kTradeOffScriptHook, script_opcodes, sizeof(script_opcodes));
     
     // Change Koopa Curse to affect all enemies.
     common::kKoopaCurseParams->num_targets = 2;
     
     // Enable crash handler printout.
-    *kEnableHandlerOpcode = 0x3800FFFF;  // li r0, -1
-    ttyd::OSCache::ICInvalidateRange(&kEnableHandlerOpcode, sizeof(uint32_t));
+    const uint32_t enable_handler_opcode = 0x3800FFFF;  // li r0, -1
+    mod::patch::WritePatch(
+        kEnableHandlerOpcode, &enable_handler_opcode, sizeof(uint32_t));
 }
 
 void Shufflizer::Update() {
