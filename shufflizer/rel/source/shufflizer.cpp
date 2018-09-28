@@ -52,7 +52,13 @@ const uint32_t kTwoCopyBadges[] = { 0x303ffb7fU, 0x787107ffU, 0x00300000U };
 const uint32_t kFieldItems[]    = { 0xffffffffU, 0x0006001fU };
 // Bitfield for items, recipes, and stackable badges that can appear in shops,
 // offset by THUNDER_BOLT.  Gold Bar and Gold Bar x3 are not included.
-const uint32_t kShopItems[]     = { 
+const uint32_t kShopGuaranteedItems[]     = { 
+    0xffffffffU, 0x0006001fU, 0x00000000U, 0x00000000U, 0x01400000U, 0x00000000U
+};
+const uint32_t kShopFillerItems[]     = { 
+    0x00000000U, 0xfff80000U, 0xffffffffU, 0x3bff0fffU, 0x0ebfffffU, 0x078ffff7U
+};
+const uint32_t kShopAllItems[]     = { 
     0xffffffffU, 0xfffe001fU, 0xffffffffU, 0x3bff0fffU, 0x0fffffffU, 0x078ffff7U
 };
 // Offset from the start of shops' modules to their shop info, following the
@@ -350,15 +356,20 @@ void Shufflizer::InitializeShuffleSeed() {
     // - 39 normal, 57 recipes, 64 stackable badge types.
     int16_t shop_items[160];
     pos = CreateItemArrayFromBitfield(
-        kShopItems, kShopItems + 6, shop_items, ItemId::THUNDER_BOLT);
+        kShopGuaranteedItems, kShopGuaranteedItems + 6, shop_items, 
+        ItemId::THUNDER_BOLT);
+    CreateItemArrayFromBitfield(
+        kShopFillerItems, kShopFillerItems + 6, pos, 
+        ItemId::THUNDER_BOLT);
     // Dried Shroom and Dizzy Dial are not randomized, but Gold Bars should be
     // included in the normal shops.
     shop_items[ItemId::DRIED_SHROOM - ItemId::THUNDER_BOLT] = ItemId::GOLD_BAR;
     shop_items[ItemId::DIZZY_DIAL - ItemId::THUNDER_BOLT] = ItemId::GOLD_BAR_X3;
     
-    // 10. Shuffle recipes and badges, then shuffle first 77 items.
+    // 10. Shuffle filler items (all but normal items + HP/FP Plus),
+    // then shuffle first 77 items.
     // (60 shop + 20 Pianta slots - Dried Shroom, Dizzy Dial, and Cake Mix)
-    ShuffleRange(shop_items + 39, pos);
+    ShuffleRange(pos, shop_items + 160);
     ShuffleRange(shop_items, shop_items + 77);
     
     // 11. Fill out normal shop item data.
@@ -426,7 +437,7 @@ void Shufflizer::OnModuleLoaded(ttyd::oslink::OSModuleInfo* module_info) {
         int32_t* item_pos = common::kPitCharlietonItemArr;
         for (int32_t i = 0; i < 6; ++i) {
             *item_pos++ = GetRandomItemFromBitfield(
-                kShopItems, kShopItems + 6, ItemId::THUNDER_BOLT);
+                kShopAllItems, kShopAllItems + 6, ItemId::THUNDER_BOLT);
         }
         // Change the enemy type that spawns on the floor, if enabled.
         if (options_.shuffle_pit_floors) {
@@ -760,6 +771,7 @@ void Shufflizer::AlterHpAndLevel(
     
     // Apply configurable HP modifier.
     hp_stat = (hp_stat * options_.enemy_hp_modifier + 50) / 100;
+    if (hp_stat < 1) hp_stat = 1;
     unit_params->max_hp = hp_stat;
     
     // Set sentinel bit so enemy's stats aren't changed multiple times.
