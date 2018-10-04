@@ -30,13 +30,15 @@ void Mod::Init() {
     ttyd::fontmgr::fontmgrTexSetup();
     patch::HookFunction(ttyd::fontmgr::fontmgrTexSetup, [](){});
 
-    // Skip the logo
+    // Skip to the title on startup; for development only, isn't init'd properly.
+    /*
     patch::HookFunction(
         ttyd::seq_logo::seq_logoMain,
         [](ttyd::seqdrv::SeqInfo*) {
             ttyd::seqdrv::seqSetSeq(
                 ttyd::seqdrv::SeqIndex::kTitle, nullptr, nullptr);
         });
+    */
         
     // Main mod initialization logic.
     shufflizer_mod_.Init();
