@@ -25,7 +25,7 @@ More detailed information can eventually be found at the following link: **[Shuf
     * Alternatively, select "GCI Folder" for the format of the memory card in Slot A (in **Config dialog > GameCube > Device settings**), and copy the .gci file directly into the folder, located at **{Dolphin directory}/GC/USA/Card A**.
   * For **Nintendont** or other console users:
     * Use the appropriate homebrew apps / folders, etc. to copy the file from your SD card to your GC memory card or virtual memory card.
-* Use the Gecko loader cheat code in the "relloader" directory to make the game load the Shufflizer GCI.
+* Use the Gecko loader cheat code in the "relloader-ttyd" directory to make the game load the Shufflizer GCI.
   * For **Dolphin** users:
     * Right-click your TTYD game in the games list and go to **Properties > Show Defaults**.
     * In the "G8ME01.ini" file that opens, copy the text from the US Gecko loader code (at **relloader-ttyd/REL_Loader/Gecko/REL_Loader_US_Gecko.txt**) into the Gecko codes section, marked by the text **[Gecko]** (if the section doesn't exist, add it).
