@@ -22,16 +22,15 @@ More detailed information can be found at the following link: **[Shufflizer Doc]
 * Copy the GCI containing the Shufflizer module to the memory card. (This file contains code required to run Shufflizer, and has no relation to your TTYD save file.)
   * For **Dolphin** users:
     * Use the memcard manager located in **Tools > Memcard Manager (GC)** to import the GCI into the file Dolphin is using for a memory card.
-    * Alternatively, select "GCI Folder" for the format of the memory card in Slot A (in **Config dialog > GameCube > Device settings**), and copy the .gci file directly into the folder, located at **{Dolphin directory}/GC/USA/Card A**.
+    * Alternatively, select "GCI Folder" for the format of the memory card in Slot A (in **Config dialog > GameCube > Device settings**), and copy the .gci file directly into the folder, located by default at **{Dolphin directory}/GC/USA/Card A**.
   * For **Nintendont** or other console users:
     * Use the appropriate homebrew apps / folders, etc. to copy the file from your SD card to your GC memory card or virtual memory card.
 * Use the Gecko loader cheat code in the "relloader-ttyd" directory to make the game load the Shufflizer GCI.
   * For **Dolphin** users:
-    * Right-click your TTYD game in the games list and go to **Properties > Show Defaults**.
-    * In the "G8ME01.ini" file that opens, copy the text from the US Gecko loader code (at **relloader-ttyd/REL_Loader/Gecko/REL_Loader_US_Gecko.txt**) into the Gecko codes section, marked by the text **[Gecko]** (if the section doesn't exist, add it).
+    * Right-click your TTYD game in the games list and go to **Properties > Gecko Codes**, and add the US Gecko loader code (at **relloader-ttyd/REL_Loader/Gecko/REL_Loader_US_Gecko.txt**).
+    * (For older revisions of Dolphin v5, go to **Properties > Show Defaults**, and copy the text code into the Gecko codes section of the "G8ME01.ini" file that opens, marked by the text **[Gecko]**; if the section doesn't exist, add it.)
     * Enable cheats in **Config dialog > General**, and enable the loader code in **Properties > Gecko Codes** for TTYD.
   * For **Nintendont** users:
-    * Convert the loader code's text file into a .GCT file using an online utility.
-    * Copy the converted code onto your SD card, either to **/codes/G8ME01.gct** or **/games/G8ME01/G8ME01.gct** (if using an ISO). 
+    * Copy the loader GCT (at **relloader-ttyd/REL_Loader/GCT/G8ME01.gct**) onto your SD card, either to **/codes/G8ME01.gct** or into the folder with your TTYD ISO.
     * Enable cheats in Nintendont's settings before booting the game.
   * Alternatively, you can use the Action Replay loader code (e.g., if you have a physical Action Replay disc).
