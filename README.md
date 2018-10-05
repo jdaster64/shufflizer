@@ -1,7 +1,7 @@
-### Paper Mario: TTYD (U) Shufflizer v0.xx by Jdaster64
+### Paper Mario: TTYD (U) Shufflizer v1.00 by Jdaster64
 
 ### Credits  
-* **PistonMiner** for TTYD scripting disassembly, the inital code for the "rel" framework, and the elf2rel, gcipack, and rellink utilities. (GitHub repo for these tools [here](https://github.com/PistonMiner/ttyd-tools).)
+* **PistonMiner** for TTYD scripting disassembly, the initial code for the "rel" framework, and the elf2rel, gcipack, and rellink utilities. (GitHub repo for these tools [here](https://github.com/PistonMiner/ttyd-tools).)
 * PistonMiner and **Zephiles** for their work on TTYD symbol maps, and the GCI loader code (GitHub repo for the loader [here](https://github.com/Zephiles/TTYD-Randomizers).)
 
 ### Overview
@@ -12,7 +12,7 @@ The Paper Mario: TTYD **Shufflizer** is a mod that introduces the following rand
 
 In addition, the player can pull up a menu to globally adjust enemies' HP, ATK, and DEF power, and toggle on/off Pit floor randomization (hold Z and use the D-Pad to make / adjust menu selections, and hold Z + press L to toggle on/off options).
 
-More detailed information can eventually be found at the following link: **[Shufflizer Doc](https://goo.gl/VhiqZH)**
+More detailed information can be found at the following link: **[Shufflizer Doc](https://goo.gl/VhiqZH)**
 
 **The Shufflizer currently only supports the North American NTSC version of TTYD**, and is designed to work only with a **retail disc or unmodified ISO** (md5 of **db9a997a617ee03bbc32336d6945ec02**).
 
