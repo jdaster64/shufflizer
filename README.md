@@ -28,7 +28,7 @@ More detailed information can be found at the following link: **[Shufflizer Doc]
 * Use the Gecko loader cheat code in the "relloader-ttyd" directory to make the game load the Shufflizer GCI.
   * For **Dolphin** users:
     * Right-click your TTYD game in the games list and go to **Properties > Gecko Codes**, and add the US Gecko loader code (at **relloader-ttyd/REL_Loader/Gecko/REL_Loader_US_Gecko.txt**).
-    * (For older revisions of Dolphin v5, go to **Properties > Show Defaults**, and copy the text code into the Gecko codes section of the "G8ME01.ini" file that opens, marked by the text **[Gecko]**; if the section doesn't exist, add it.)
+    * (For older revisions of Dolphin v5, instead go to **Properties > Show Defaults**, and copy the text code into the Gecko codes section of the "G8ME01.ini" file that opens, marked by the text **[Gecko]**; if the section doesn't exist, add it.)
     * Enable cheats in **Config dialog > General**, and enable the loader code in **Properties > Gecko Codes** for TTYD.
   * For **Nintendont** users:
     * Copy the loader GCT (at **relloader-ttyd/REL_Loader/GCT/G8ME01.gct**) onto your SD card, either to **/codes/G8ME01.gct** or into the folder with your TTYD ISO.
