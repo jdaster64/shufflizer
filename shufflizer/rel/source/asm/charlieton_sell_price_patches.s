@@ -64,4 +64,4 @@ ble+ 0x8
 li %r0, 999
 
 CharlietonRogueportPriceItemPatchEnd:
-b 0
+nop
