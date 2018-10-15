@@ -13,9 +13,9 @@ subi %r3, %r3, 0x3333
 li %r0, 1
 mullw %r4, %r4, %r5
 mulhw %r23, %r3, %r4
-cmpwi %r23, 999
+cmpwi %r23, 500
 ble+ 0x8
-li %r23, 999
+li %r23, 500
 
 CharlietonPitPriceListPatchEnd:
 CharlietonPitPriceItemPatchStart:
@@ -28,9 +28,9 @@ add %r3, %r0, %r27
 lhz %r0, 0x0014 (%r3)
 mullw %r0, %r0, %r5
 mulhw %r0, %r4, %r0
-cmpwi %r0, 999
+cmpwi %r0, 500
 ble+ 0x8
-li %r0, 999
+li %r0, 500
 stw %r0, 0x00a8 (%r31)
 lbz %r0, 0x001c (%r3)
 extsb %r0, %r0
@@ -44,7 +44,7 @@ subi %r5, %r3, 0x3333
 li %r0, 1
 rlwinm %r3, %r4, 2, 0, 29
 mulhw %r23, %r5, %r3
-cmpwi %r23, 999
+cmpwi %r23, 1000
 ble+ 0x8
 li %r23, 999
 
@@ -59,7 +59,7 @@ subi %r4, %r4, 0x3333
 lhz %r0, 0x0014 (%r3)
 rlwinm %r0, %r0, 2, 0, 29
 mulhw %r0, %r4, %r0
-cmpwi %r0, 999
+cmpwi %r0, 1000
 ble+ 0x8
 li %r0, 999
 

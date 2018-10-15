@@ -1,4 +1,4 @@
-### Paper Mario: TTYD (U) Shufflizer v1.00 by Jdaster64
+### Paper Mario: TTYD (U) Shufflizer v1.01 by Jdaster64
 
 ### Credits  
 * **PistonMiner** for TTYD scripting disassembly, the initial code for the "rel" framework, and the elf2rel, gcipack, and rellink utilities. (GitHub repo for these tools [here](https://github.com/PistonMiner/ttyd-tools).)
@@ -19,6 +19,7 @@ More detailed information can be found at the following link: **[Shufflizer Doc]
 **Combination with any other mods or cheat codes is not officially supported.**
 
 ### Installation Guide
+* Download the GCI and source from the most recent release of the Shufflizer (on the "Releases" page).
 * Copy the GCI containing the Shufflizer module to the memory card. (This file contains code required to run Shufflizer, and has no relation to your TTYD save file.)
   * For **Dolphin** users:
     * Use the memcard manager located in **Tools > Memcard Manager (GC)** to import the GCI into the file Dolphin is using for a memory card.

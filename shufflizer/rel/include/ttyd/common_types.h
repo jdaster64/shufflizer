@@ -722,12 +722,12 @@ struct AttackParams {
 } __attribute__((__packed__));
     
 struct ItemData {
-    const char*     _unk_0x00;  // Four item-specific strings, unknown purpose.
-    const char*     _unk_0x04;
-    const char*     _unk_0x08;
-    const char*     _unk_0x0c;
+    const char*     item_string_id;     // Used for recipe lookups, etc.
+    const char*     item_name_msg;
+    const char*     item_desc_msg;
+    const char*     item_desc_menu_msg;
     uint16_t        _unk_0x10;
-    int16_t         type_sort_order;  // For "By Type" ordering
+    int16_t         type_sort_order;    // For "By Type" ordering
     int16_t         buy_price;
     int16_t         discount_price;
     int16_t         star_piece_price;

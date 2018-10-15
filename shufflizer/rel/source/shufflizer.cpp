@@ -19,6 +19,7 @@
 #include "patch.h"
 #include "shufflizer_common.h"
 
+// Assembly patch functions.
 extern "C" {
     void CharlietonPitPriceListPatchStart();
     void CharlietonPitPriceItemPatchStart();
@@ -28,6 +29,31 @@ extern "C" {
     void CharlietonPitPriceItemPatchEnd();
     void CharlietonRogueportPriceListPatchEnd();
     void CharlietonRogueportPriceItemPatchEnd();
+
+    void StartPreventBlooperCrash1();
+    void StartPreventBlooperCrash2();
+    void BranchBackPreventBlooperCrash1();
+    void BranchBackPreventBlooperCrash2();
+}
+
+// Code referenced in assembly patches.
+extern "C" {
+    
+bool checkBattleUnitPointer(void* battle_unit_ptr) {
+    const uintptr_t address = reinterpret_cast<uint32_t>(battle_unit_ptr);
+    return address >= 0x80000000 && address < 0x81800000;
+}
+
+uint32_t preventBlooperCrash1(uint32_t unknown_val, void *battle_unit_ptr) { 
+    if (checkBattleUnitPointer(battle_unit_ptr)) {
+        // 0x214 in JP
+        uint32_t offset = 0x218;
+        const uintptr_t address = reinterpret_cast<uint32_t>(battle_unit_ptr);
+        *reinterpret_cast<uint32_t*>(address + offset) = unknown_val;
+    }
+    return 2;
+}
+
 }
 
 namespace mod::shufflizer {
@@ -130,14 +156,18 @@ uint32_t* kTradeOffRankUpOpcode = reinterpret_cast<uint32_t*>(0x8012eb3c);
 // Address to insert new script code to give Trade Off an +ATK effect.
 uint32_t* kTradeOffScriptHook   = reinterpret_cast<uint32_t*>(0x80369b34);
 
-// Addresses to write patches to Charlieton code (to avoid > 999 prices).
+// Addresses to write patches to Charlieton code (to put maxes on item prices)
 void* kCharlietonGorListHook    = reinterpret_cast<uint32_t*>(0x8023c0e4);
 void* kCharlietonPitListHook    = reinterpret_cast<uint32_t*>(0x8023c124);
 void* kCharlietonGorItemHook    = reinterpret_cast<uint32_t*>(0x8023d26c);
 void* kCharlietonPitItemHook    = reinterpret_cast<uint32_t*>(0x8023d2e0);
+// Addresses to write patches to fix Blooper crash.
+const uintptr_t kBlooperCrash1HookAddress   = 0x8010f810;
+const uintptr_t kBlooperCrash2HookAddress   = 0x8010f888;
 
 // Miscellaneous constants.
-int16_t kKoopaCurseIconId       = 390;
+const int16_t kKoopaCurseIconId             = 390;
+const int16_t kChapter3PeachIntermissionSeq = 173;
 
 void InitializeItemDataChanges() {
     ItemData* item_db = common::kItemDataArr;
@@ -157,13 +187,18 @@ void InitializeItemDataChanges() {
     item_db[ItemId::FP_DRAIN_P].bp_cost = 1;
     
     // Set recipe prices based on sell price, badge Star Piece costs on BP cost,
-    // and fix unused badges' sort order.
+    // and fix unused items' and badges' sort order.
     for (int32_t i = 0; i < ItemId::MAX_ITEM_ID; ++i) {
         ItemData& item = item_db[i];
-        if (item.buy_price == 10 && item.sell_price > 8) {
-            item.buy_price = item.sell_price * 5 / 4;
-        }
-        if (i >= ItemId::POWER_JUMP) {
+        if (i >= ItemId::GOLD_BAR && i <= ItemId::FRESH_JUICE) {
+            if (item.buy_price == 10 && item.sell_price > 8) {
+                item.buy_price = item.sell_price * 5 / 4;
+            }
+            
+            if (item.type_sort_order > 0x31) {
+                item.type_sort_order += 1;
+            }
+        } else if (i >= ItemId::POWER_JUMP) {
             item.star_piece_price = item.bp_cost + 1;
             
             if (item.type_sort_order > 0x49) {
@@ -178,7 +213,9 @@ void InitializeItemDataChanges() {
         }
     }
     
-    // Fixed sort order for unused 'P' badges.
+    // Fixed sort order for Koopa Curse and unused 'P' badges.
+    item_db[ItemId::KOOPA_CURSE].type_sort_order        = 0x31 + 1;
+    
     item_db[ItemId::ALL_OR_NOTHING_P].type_sort_order   = 0x24 + 1;
     item_db[ItemId::LUCKY_DAY_P].type_sort_order        = 0x3b + 2;
     item_db[ItemId::PITY_FLOWER_P].type_sort_order      = 0x43 + 3;
@@ -561,6 +598,14 @@ void Shufflizer::OnModuleLoaded(ttyd::oslink::OSModuleInfo* module_info) {
         // Make it despawn if you have an impossible item (which never happens).
         *chest_despawn_item_ptr = ItemId::INVALID_ITEM_CAN;
     }
+    
+    // Make Ultra Hammer unpurchaseable before finishing Chapter 3.
+    ItemData* item_db = common::kItemDataArr;
+    if (common::GetStorySequence() < kChapter3PeachIntermissionSeq) {
+        item_db[ItemId::ULTRA_HAMMER].buy_price = 834;
+    } else {
+        item_db[ItemId::ULTRA_HAMMER].buy_price = 250;
+    }
 }
 
 int16_t Shufflizer::ReplaceGeneralItem(int16_t id, int32_t collection_expr) {
@@ -879,7 +924,7 @@ void Shufflizer::Init() {
             return g_BtlUnit_Entry_trampoline(slot_info, unk0, unk1);
         });
     
-    // Patch in fixed text for (the altered) Trade Off, Cake, and Koopa Curse.
+    // Patch in fixed text for Trade Off, Cake, and Koopa Curse, etc.
     g_msgSearch_trampoline = patch::HookFunction(
         ttyd::msgdrv::msgSearch, [](const char* msg_key) {
             // TODO: Consider replacing these compares with a single hash and
@@ -891,10 +936,18 @@ void Shufflizer::Init() {
                        "status on all foes.";
             } else if (!ttyd::string::strcmp(msg_key, "msg_cake")) {
                 return "Scrumptious strawberry cake \n"
-                       "that heals 15 HP and FP.";
+                       "that heals 15 HP and 15 FP.";
             } else if (!ttyd::string::strcmp(msg_key, "msg_teki_kyouka")) {
                 return "Boosts foes' level by 10, but \n"
                        "temporarily gives them +3 ATK!";
+            } else if (!ttyd::string::strcmp(msg_key, "msg_ice_candy")) {
+                return "A dessert made by Zess T.\n"
+                       "Gives 15 FP, but might freeze!";
+            } else if (!ttyd::string::strcmp(msg_key, "list_ice_candy")) {
+                return "A dessert made by Zess T.\n"
+                       "Gives 15 FP, but might freeze!\n"
+                       "Made by mixing Honey Syrup \n"
+                       "with an Ice Storm.";
             }
             return g_msgSearch_trampoline(msg_key);
         });
@@ -950,6 +1003,20 @@ void Shufflizer::Init() {
     const uint32_t enable_handler_opcode = 0x3800FFFF;  // li r0, -1
     mod::patch::WritePatch(
         kEnableHandlerOpcode, &enable_handler_opcode, sizeof(uint32_t));
+        
+    // Fix crash when defeating Blooper and tentacles simultaneously.
+    mod::patch::WriteBranch(
+        reinterpret_cast<void*>(kBlooperCrash1HookAddress),
+        reinterpret_cast<void*>(StartPreventBlooperCrash1));
+    mod::patch::WriteBranch(
+        reinterpret_cast<void*>(BranchBackPreventBlooperCrash1),
+        reinterpret_cast<void*>(kBlooperCrash1HookAddress + 0x4));
+    mod::patch::WriteBranch(
+        reinterpret_cast<void*>(kBlooperCrash2HookAddress),
+        reinterpret_cast<void*>(StartPreventBlooperCrash2));
+    mod::patch::WriteBranch(
+        reinterpret_cast<void*>(BranchBackPreventBlooperCrash2),
+        reinterpret_cast<void*>(kBlooperCrash2HookAddress + 0x4));
 }
 
 void Shufflizer::Update() {
