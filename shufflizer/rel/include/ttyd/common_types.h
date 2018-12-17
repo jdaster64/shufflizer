@@ -604,7 +604,7 @@ struct AttackParams {
     uint8_t         _unk_0x10;  // Always 0x64?
     int8_t          base_fp_cost;
     int8_t          base_sp_cost;
-    uint8_t         _unk_0x13;
+    int8_t          guard_types_allowed;  // 0 = none, 2 = both; ? = guard only
     float           _unk_0x14;
     uint32_t        _unk_0x18;  // Possibly separate 8-bit values, or flags?
     

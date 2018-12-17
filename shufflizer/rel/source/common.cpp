@@ -18,6 +18,8 @@ AttackParams*
 AttackParams* kGulpRecoilParams = reinterpret_cast<AttackParams*>(0x8037CE24);
 AttackParams* kTradeOffParams   = reinterpret_cast<AttackParams*>(0x80369B60);
 AttackParams* kKoopaCurseParams = reinterpret_cast<AttackParams*>(0x8036AC3C);
+int8_t* kGuardFramesArr         = reinterpret_cast<int8_t*>(0x802EE018);
+int8_t* kSuperguardFramesArr    = reinterpret_cast<int8_t*>(0x802EE020);
 int32_t* kDazzleItemArr         = reinterpret_cast<int32_t*>(0x803AD038);
 int32_t* kCharlietonItemArr     = reinterpret_cast<int32_t*>(0x803AD078);
 int32_t* kHowzItemArr           = reinterpret_cast<int32_t*>(0x80419D90);
@@ -26,6 +28,7 @@ int32_t* kPiantaParlorItemArr   = reinterpret_cast<int32_t*>(0x80419E34);
 
 const int32_t kSavedWordFlagBaseValue = -130000000;
 const int32_t kPitModuleNpcArrOffset  = 0xEF90;
+const int32_t kPitModuleCharlietonChanceOffset = 0x11EA4;
 const int32_t kObjectChestScriptPtrOffset = 0x1D8;
 const int32_t kObjectCollectionExprOffset = 0x1E4;
 const int32_t kUltraHammerChestDespawnIdOffset = 0x3C8E4;
@@ -43,6 +46,10 @@ const uint32_t kFilenameOffset      = 0x11BC;
 // Pouch (Player stats / inventory) related offsets.
 char** kPouchPtr = reinterpret_cast<char**>(r13 + 0x1BE0);
 const uint32_t kKeyItemsOffset      = 0x00A0;
+
+// Battle related offsets.
+char** kBattlePtr = reinterpret_cast<char**>(r13 + 0x1C70);
+const uint32_t kBattleMenuOffset    = 0x1C78;
 
 const char* GetCurrentArea() {
     if (!*kSaveDataPtr) return nullptr;
@@ -87,6 +94,13 @@ bool HasKeyItemInInventory(int16_t item_id) {
         if (*key_items_arr++ == item_id) return true;
     }
     return false;
+}
+
+void* GetBattleWindowDataOffset() {
+    if (!*kBattlePtr) return nullptr;
+    void** wrapper = reinterpret_cast<void**>(*kBattlePtr + kBattleMenuOffset);
+    if (!*wrapper) return nullptr;
+    return *wrapper;
 }
 
 }

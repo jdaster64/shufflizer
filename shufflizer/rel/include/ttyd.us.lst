@@ -296,8 +296,19 @@
 // cardmgr.o
 800b2388:cardCopy2Main
 
+// mario_pouch.o
+800d3300:pouchEquipCheckBadge
+800d3c00:pouchAddAP
+800d3c44:pouchGetAP
+
+// sound.o
+800e0ca0:SoundEfxPlayEx
+
 // event.o
 800ee688:stg0_00_init
+
+// battle_ac.o
+800fa1b8:BattleActionCommandCheckDefence
 
 // battle_damage.o
 // 800fa678:BattleCheckCounter
@@ -318,7 +329,11 @@
 // 800fde2c:BattleCheckPikkyoro
 // 800fdfd4:BattleDamageDirect
 
+// battle_menu_disp.o
+80115dac:DrawWeaponWin
+
 // battle_unit.o
+80126968:BtlUnit_GetWeaponCost
 80128fe0:BtlUnit_Entry
 
 // runtime.c

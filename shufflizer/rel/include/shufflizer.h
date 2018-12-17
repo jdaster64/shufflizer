@@ -45,6 +45,8 @@ private:
         ttyd::common::AttackParams* attack_params, void* unk0, uint32_t unk1);
     void AlterHpAndLevel(
         ttyd::battle_unit::BattlePartySlotInfo* slot_info);
+    // Handles move custom power level selection when in Mario's battle menus.
+    void HandleMovePowerLevelSelection();
     
     // Holds the information required to look up the field items, shop items,
     // and Pit floor order specific to the current shuffle seed / save file.

@@ -22,10 +22,13 @@ namespace ButtonId = ttyd::common::ButtonId;
 namespace MenuState {
     enum e {
         INVALID_MENU_STATE = 0,
+        CHANGE_PAGE,
         HP_MODIFIER,
         ATK_MODIFIER,
         DEF_MODIFIER,
         PIT_SHUFFLE_FLOORS,
+        SELECT_STACKED_POWER,
+        SUPERGUARD_COST,
     };
 }
 
@@ -41,7 +44,7 @@ const uint16_t kMenuSelectCommand   = ButtonId::Z | ButtonId::L;
 // For automatically ticking options +1/-1 at a time if a direction is held.
 const int32_t kMenuCommandSlowTickStart     = 24;
 const int32_t kMenuCommandSlowTickRate      = 12;
-const int32_t kMenuCommandFastTickStart     = 180;
+const int32_t kMenuCommandFastTickStart     = 120;
 const int32_t kMenuCommandFastTickRate      = 3;
     
 bool OnTitleScreen() {
@@ -89,6 +92,8 @@ bool ShouldTickOrAutotick(int32_t time_held) {
 // Global menu state variables.
 uint16_t last_command_      = 0;
 int32_t time_button_held_   = kFadeoutEndTime;
+int32_t menu_selection_     = 1;
+int32_t menu_page_          = 1;
 int32_t menu_state_         = MenuState::HP_MODIFIER;
 
 }
@@ -130,31 +135,77 @@ void ShufflizerMenu::Update() {
         }
     }
     
-    if (time_button_held_ < 0) return;
-    switch (last_command_) {
-        case kMenuSelectCommand: {
-            if (menu_state_ == MenuState::PIT_SHUFFLE_FLOORS &&
-                time_button_held_ == 0) {
-                options_->shuffle_pit_floors = !options_->shuffle_pit_floors;
-            }
+    switch (100 * menu_page_ + menu_selection_) {
+        case 101: {
+            menu_state_ = MenuState::HP_MODIFIER;
             break;
         }
+        case 102: {
+            menu_state_ = MenuState::ATK_MODIFIER;
+            break;
+        }
+        case 103: {
+            menu_state_ = MenuState::DEF_MODIFIER;
+            break;
+        }
+        case 201: {
+            menu_state_ = MenuState::PIT_SHUFFLE_FLOORS;
+            break;
+        }
+        case 202: {
+            menu_state_ = MenuState::SELECT_STACKED_POWER;
+            break;
+        }
+        case 203: {
+            menu_state_ = MenuState::SUPERGUARD_COST;
+            break;
+        }
+        default: {
+            menu_state_ = MenuState::CHANGE_PAGE;
+            break;
+        }
+    }
+    
+    if (time_button_held_ < 0) return;
+    switch (last_command_) {
         case kMenuUpCommand: {
             if (time_button_held_ == 0) {
-                if (menu_state_ == MenuState::HP_MODIFIER) {
-                    menu_state_ = MenuState::PIT_SHUFFLE_FLOORS;
+                if (menu_selection_ == 1) {
+                    menu_selection_ = 4;
                 } else {
-                    --menu_state_;
+                    --menu_selection_;
                 }
             }
             break;
         }
         case kMenuDownCommand: {
             if (time_button_held_ == 0) {
-                if (menu_state_ == MenuState::PIT_SHUFFLE_FLOORS) {
-                    menu_state_ = MenuState::HP_MODIFIER;
+                if (menu_selection_ == 4) {
+                    menu_selection_ = 1;
                 } else {
-                    ++menu_state_;
+                    ++menu_selection_;
+                }
+            }
+            break;
+        }
+        case kMenuSelectCommand: {
+            if (time_button_held_ == 0) {
+                switch (menu_state_) {
+                    case MenuState::CHANGE_PAGE: {
+                        menu_page_ = menu_page_ ^ 3;
+                        break;
+                    }
+                    case MenuState::SELECT_STACKED_POWER: {
+                        options_->select_move_power =
+                        !options_->select_move_power;
+                        break;
+                    }
+                    case MenuState::PIT_SHUFFLE_FLOORS: {
+                        options_->shuffle_pit_floors =
+                        !options_->shuffle_pit_floors;
+                        break;
+                    }
+                    default: break;
                 }
             }
             break;
@@ -177,6 +228,12 @@ void ShufflizerMenu::Update() {
                     case MenuState::DEF_MODIFIER: {
                         if (options_->enemy_def_modifier > 0) {
                             --options_->enemy_def_modifier;
+                        }
+                        break;
+                    }
+                    case MenuState::SUPERGUARD_COST: {
+                        if (options_->superguard_cost > 0) {
+                            --options_->superguard_cost;
                         }
                         break;
                     }
@@ -206,6 +263,12 @@ void ShufflizerMenu::Update() {
                         }
                         break;
                     }
+                    case MenuState::SUPERGUARD_COST: {
+                        if (options_->superguard_cost < 100) {
+                            ++options_->superguard_cost;
+                        }
+                        break;
+                    }
                     default: break;
                 }
             }
@@ -218,7 +281,7 @@ void ShufflizerMenu::Draw() {
     if (OnTitleScreen()) {
         uint8_t title_window_color[4] = { 0, 0, 0, 0xCC };
         DrawWindow(title_window_color, -225, -16, 450, 70, 10);
-        DrawString("   Shufflizer v1.01 by jdaster64", -175, -30, -1U, 0.75);
+        DrawString("   Shufflizer v1.11 by jdaster64", -175, -30, -1U, 0.75);
         DrawString("Install guide: https://goo.gl/VhiqZH", -175, -53, -1U, 0.75);
     } else if (!InMainGameModes()) {
         return;
@@ -233,27 +296,48 @@ void ShufflizerMenu::Draw() {
     uint8_t window_alpha = static_cast<uint8_t>(alpha * 4 / 5);
         
     uint8_t menu_window_color[4] = { 0, 0, 0, window_alpha };
-    DrawWindow(menu_window_color, -220, -65, 280, 90, 10);
+    DrawWindow(menu_window_color, -220, -65, 335, 90, 10);
     
     char buf[128];
     uint32_t color;
     
-    color = (menu_state_ == MenuState::HP_MODIFIER ? -0xFFFFU : -0xFFU) | alpha;
-    sprintf(buf, "HP modifier: %ld%s", options_->enemy_hp_modifier, "%");
-    DrawString(buf, -205, -73, color, 0.75);
+    if (menu_page_ == 1) {
+        color = (menu_state_ == MenuState::HP_MODIFIER 
+                 ? -0xFFFFU : -0xFFU) | alpha;
+        sprintf(buf, "HP modifier: %ld%s", options_->enemy_hp_modifier, "%");
+        DrawString(buf, -205, -73, color, 0.75);
+        
+        color = (menu_state_ == MenuState::ATK_MODIFIER
+                 ? -0xFFFFU : -0xFFU) | alpha;
+        sprintf(buf, "ATK modifier: %ld%s", options_->enemy_atk_modifier, "%");
+        DrawString(buf, -205, -92, color, 0.75);
+        
+        color = (menu_state_ == MenuState::DEF_MODIFIER
+                 ? -0xFFFFU : -0xFFU) | alpha;
+        sprintf(buf, "DEF modifier: +%ld", options_->enemy_def_modifier);
+        DrawString(buf, -205, -111, color, 0.75);
+    } else if (menu_page_ == 2) {
+        color = (menu_state_ == MenuState::PIT_SHUFFLE_FLOORS 
+                 ? -0xFFFFU : -0xFFU) | alpha;
+        sprintf(buf, "Pit floors shuffled: %s", 
+                options_->shuffle_pit_floors ? "Yes" : "No");
+        DrawString(buf, -205, -73, color, 0.75);
+        
+        color = (menu_state_ == MenuState::SELECT_STACKED_POWER 
+                 ? -0xFFFFU : -0xFFU) | alpha;
+        sprintf(buf, "Stacked move power: %s", 
+                options_->select_move_power ? "Custom" : "Fixed");
+        DrawString(buf, -205, -92, color, 0.75);
+        
+        color = (menu_state_ == MenuState::SUPERGUARD_COST 
+                 ? -0xFFFFU : -0xFFU) | alpha;
+        sprintf(buf, "Superguard cost: %.2f SP",
+                options_->superguard_cost * 0.01f);
+        DrawString(buf, -205, -111, color, 0.75);
+    }
     
-    color = (menu_state_ == MenuState::ATK_MODIFIER ? -0xFFFFU : -0xFFU) | alpha;
-    sprintf(buf, "ATK modifier: %ld%s", options_->enemy_atk_modifier, "%");
-    DrawString(buf, -205, -92, color, 0.75);
-    
-    color = (menu_state_ == MenuState::DEF_MODIFIER ? -0xFFFFU : -0xFFU) | alpha;
-    sprintf(buf, "DEF modifier: +%ld", options_->enemy_def_modifier);
-    DrawString(buf, -205, -111, color, 0.75);
-    
-    color = (menu_state_ == MenuState::PIT_SHUFFLE_FLOORS 
-        ? -0xFFFFU : -0xFFU) | alpha;
-    sprintf(buf, "Pit floors shuffled: %s", 
-            options_->shuffle_pit_floors ? "Yes" : "No");
+    color = (menu_state_ == MenuState::CHANGE_PAGE ? -0xFFFFU : -0xFFU) | alpha;
+    sprintf(buf, "Next Page (%ld of 2)", menu_page_);
     DrawString(buf, -205, -130, color, 0.75);
 }
 

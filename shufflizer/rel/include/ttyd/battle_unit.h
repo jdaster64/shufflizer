@@ -1,11 +1,13 @@
 #pragma once
 
 #include <cstdint>
+#include <ttyd/common_types.h>
 
 namespace ttyd::battle_unit {
 
 extern "C" {
     
+// Describes a class of battle unit.
 struct BattleUnitParams {
     uint32_t    type_id;        // e.g. 0xab = Bonetail
     const char* name_lookup;    // e.g. "btl_un_kuribo" for Goomba
@@ -73,6 +75,83 @@ struct BattleUnitParams {
     void*       _unk_0xbc;
     void*       _unk_0xc0;
 } __attribute__((__packed__));
+
+static_assert(sizeof(BattleUnitParams) == 0xC4);
+
+struct BattleUnitBadgesEquipped {
+    int8_t close_call;
+    int8_t pretty_lucky;
+    int8_t lucky_day;
+    int8_t _unk_0x03;  // Possibly unused
+    int8_t power_plus;
+    int8_t p_up_d_down;
+    int8_t all_or_nothing;
+    int8_t mega_rush;
+    
+    int8_t power_rush;
+    int8_t p_down_d_up;
+    int8_t double_pain;
+    int8_t last_stand;
+    int8_t defend_plus;
+    int8_t damage_dodge;
+    int8_t happy_heart;
+    int8_t happy_flower;
+    
+    int8_t return_postage;
+    int8_t hp_plus;
+    int8_t fp_plus;
+    int8_t double_dip;
+    int8_t triple_dip;
+    int8_t flower_saver;
+    int8_t feeling_fine;
+    int8_t zap_tap;
+    
+    int8_t pity_flower;
+    int8_t hp_drain;
+    int8_t fp_drain;
+    int8_t refund;
+    int8_t charge;
+    int8_t super_charge;
+    int8_t unused_square_diamond_badge;
+    int8_t jumpman;
+    
+    int8_t hammerman;
+    int8_t ice_power;
+    int8_t spike_shield;
+    int8_t super_appeal;
+    int8_t lucky_start;
+    int8_t simplifier;
+    int8_t unsimplifier;
+    int8_t _unk_0x27;  // Probably unused / padding
+} __attribute__((__packed__));
+
+// Describes an instance of a battle unit, or "actor".
+struct BattleUnitInstance {
+    uint32_t            _unk_0x000;
+    uint32_t            _unk_0x004;
+    uint32_t            type_id;
+    uint32_t            _unk_0x00c;
+    BattleUnitParams*   unit_class_params;
+    // Has various property flags (spiky, etc.) for current state, other stuff?
+    void*               _unk_0x014;
+    
+    char                _unk_0x018[0xf0];
+    int16_t             max_hp;
+    int16_t             base_max_hp;                  // i.e., w/no badges
+    int16_t             current_hp;
+    int16_t             max_fp;
+    int16_t             base_max_fp;
+    int16_t             current_fp;
+    float               _unk_0x114;
+    char                current_status_params[0x1e];  // TODO: sep. struct
+    char                _unk_0x136[0xe];
+    void*               base_status_vulnerability;    // TODO: sep. struct
+    char                _unk_0x148[0x198];
+    BattleUnitBadgesEquipped    badges_equipped;
+    char                _unk_0x308[0x82c];
+} __attribute__((__packed__));
+
+static_assert(sizeof(BattleUnitInstance) == 0xB34);
     
 // Describes one unit in a battle party.
 struct BattlePartySlotInfo {
@@ -105,7 +184,8 @@ struct BattlePartySlotInfo {
 // BtlUnit_GetGuardKouraPtr
 // BtlUnit_PayWeaponCost
 // BtlUnit_CheckWeaponCost
-// BtlUnit_GetWeaponCost
+int32_t BtlUnit_GetWeaponCost(
+    BattleUnitInstance* battle_unit, common::AttackParams* attack_params);
 // BtlUnit_SetMaxFp
 // BtlUnit_GetMaxFp
 // BtlUnit_RecoverFp

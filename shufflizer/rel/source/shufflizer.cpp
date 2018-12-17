@@ -1,17 +1,23 @@
 #include "shufflizer.h"
 
 #include <cstdint>
+#include <cstdio>
+#include <ttyd/battle_ac.h>
 #include <ttyd/battle_damage.h>
+#include <ttyd/battle_menu_disp.h>
 #include <ttyd/battle_unit.h>
 #include <ttyd/cardmgr.h>
 #include <ttyd/common_types.h>
 #include <ttyd/event.h>
 #include <ttyd/evt_mobj.h>
 #include <ttyd/itemdrv.h>
+#include <ttyd/mario_pouch.h>
 #include <ttyd/mobjdrv.h>
 #include <ttyd/msgdrv.h>
 #include <ttyd/OSCache.h>
 #include <ttyd/OSLink.h>
+#include <ttyd/seqdrv.h>
+#include <ttyd/sound.h>
 #include <ttyd/string.h>
 #include <ttyd/system.h>
 
@@ -60,13 +66,17 @@ namespace mod::shufflizer {
 
 namespace {
     
+using ::ttyd::battle_menu_disp::WeaponSelectionWindowInfo;
+using ::ttyd::battle_unit::BattleUnitInstance;
 using ::ttyd::battle_unit::BattleUnitParams;
 using ::ttyd::battle_unit::BattlePartySlotInfo;
 using ::ttyd::common::AttackParams;
 using ::ttyd::common::ItemData;
 using ::ttyd::common::ShopItemData;
 using ::ttyd::oslink::OSModuleInfo;
+using ::ttyd::seqdrv::SeqIndex;
 namespace ActorTypeId   = ::ttyd::common::ActorTypeId;
+namespace ButtonId      = ::ttyd::common::ButtonId;
 namespace ItemId        = ::ttyd::common::ItemId;
 namespace ModuleId      = ::ttyd::common::ModuleId;
 
@@ -143,6 +153,11 @@ const PitBalanceParameters kDefBalanceParams = {
       4     // (Max - min stat at max level) - (Max - min stat at min level)
 };
 
+const char* kMoveBadgeAbbreviations[14] = {
+    "P.J.", "M.B.", "P.B.", "T.J.", "Sh.S.", "Sl.S.", "So.S.",
+    "P.S.", "Q.H.", "H.T.", "P.B.", "H.R.", "F.D.", "I.S."
+};
+
 // Addresses of various patch locations specific to the Shufflizer mod.
 // TODO: All of these would probably need to be changed for other regions.
     
@@ -185,6 +200,8 @@ void InitializeItemDataChanges() {
     item_db[ItemId::CAKE].fp_restored = 15;
     item_db[ItemId::KOOPA_CURSE].icon_id = kKoopaCurseIconId;
     item_db[ItemId::FP_DRAIN_P].bp_cost = 1;
+    // Because, let's be honest.
+    item_db[ItemId::TORNADO_JUMP].bp_cost = 1;
     
     // Set recipe prices based on sell price, badge Star Piece costs on BP cost,
     // and fix unused items' and badges' sort order.
@@ -284,10 +301,27 @@ int32_t (*g_BattleCalculateFpDamage_trampoline)(
 void* (*g_BtlUnit_Entry_trampoline)(
     BattlePartySlotInfo*, float, float) = nullptr;
 const char* (*g_msgSearch_trampoline)(const char*) = nullptr;
+void (*g_seqSetSeq_trampoline)(SeqIndex, const char*, const char*) = nullptr;
+int32_t (*g_pouchEquipCheckBadge_trampoline)(int16_t) = nullptr;
+int32_t (*g_BtlUnit_GetWeaponCost_trampoline)(
+    BattleUnitInstance*, AttackParams*) = nullptr;
+void (*g_DrawWeaponWin_trampoline)() = nullptr;
+int32_t (*g_BattleActionCommandCheckDefence_trampoline)(
+    BattleUnitInstance*, AttackParams*) = nullptr;
     
 // Global state sentinels for item replacement functions.
 int32_t gShineBlockFlag = -1;
 bool gInItemBoxRoutine = false;
+
+// Global state variables for changing move badge powers in battle.
+bool gInBattle = false;
+bool gChangeMovePowersEnabled = true;
+int8_t gMaxMoveBadgeCounts[14];
+int8_t gCurMoveBadgeCounts[14];
+char gMoveBadgeTextBuffers[14][24];
+// To prevent repeated menu movements.
+bool gLWasPressed = false;
+bool gRWasPressed = false;
     
 }
 
@@ -476,6 +510,11 @@ void Shufflizer::OnModuleLoaded(ttyd::oslink::OSModuleInfo* module_info) {
             *item_pos++ = GetRandomItemFromBitfield(
                 kShopAllItems, kShopAllItems + 6, ItemId::THUNDER_BOLT);
         }
+        
+        // Make Charlieton always appear.
+        *reinterpret_cast<int32_t*>(
+            module_ptr + common::kPitModuleCharlietonChanceOffset) = 1000;
+            
         // Change the enemy type that spawns on the floor, if enabled.
         if (options_.shuffle_pit_floors) {
             int8_t pit_floor = common::GetPitSequence();
@@ -823,6 +862,57 @@ void Shufflizer::AlterHpAndLevel(
     unit_params->run_rate = unit_params->run_rate | 1;
 }
 
+void Shufflizer::HandleMovePowerLevelSelection() {
+    if (!gChangeMovePowersEnabled) return;
+    
+    // Handle button presses.
+    uint16_t buttons = ttyd::system::keyGetButton(0);
+    bool l_pressed = (buttons & ButtonId::L) && !gLWasPressed;
+    bool r_pressed = (buttons & ButtonId::R) && !gRWasPressed;
+    gLWasPressed = !!(buttons & ButtonId::L);
+    gRWasPressed = !!(buttons & ButtonId::R);
+
+    // Check to see if in menu.
+    void** win_data = reinterpret_cast<void**>(
+        common::GetBattleWindowDataOffset());
+    if (!win_data) return;
+    if (!win_data[0] || !win_data[2]) return;
+
+    const int32_t win_selection_max = reinterpret_cast<int32_t*>(win_data[0])[2];
+    const int32_t win_selection_cur = reinterpret_cast<int32_t*>(win_data[0])[0];
+    WeaponSelectionWindowInfo* moves_win_data =
+        reinterpret_cast<WeaponSelectionWindowInfo*>(win_data[2]);
+        
+    for (int32_t i = 0; i < win_selection_max; ++i) {
+        WeaponSelectionWindowInfo& wwi = moves_win_data[i];
+        if (!wwi.attack_params) continue;
+        const int32_t badge_move_idx =
+            wwi.attack_params->item_id - ItemId::POWER_JUMP;
+        if (badge_move_idx < 0 || badge_move_idx >= 14 ||
+            gMaxMoveBadgeCounts[badge_move_idx] <= 1) continue;
+               
+        // If current selection, and L / R was pressed, change level.
+        if (i == win_selection_cur) {
+            if (l_pressed &&
+                gCurMoveBadgeCounts[badge_move_idx] > 1) {
+                gCurMoveBadgeCounts[badge_move_idx] -= 1;
+                ttyd::sound::SoundEfxPlayEx(0x478, 0, 0x64, 0x40);
+            } else if (r_pressed &&
+                gCurMoveBadgeCounts[badge_move_idx] < 
+                gMaxMoveBadgeCounts[badge_move_idx]) {
+                gCurMoveBadgeCounts[badge_move_idx] += 1;
+                ttyd::sound::SoundEfxPlayEx(0x478, 0, 0x64, 0x40);
+            }
+        }
+        
+        // Overwrite default text based on current power level for all options.
+        sprintf(gMoveBadgeTextBuffers[badge_move_idx], "%s Lv. %d (L/R)",
+                kMoveBadgeAbbreviations[badge_move_idx],
+                gCurMoveBadgeCounts[badge_move_idx]);
+        wwi.menu_text = gMoveBadgeTextBuffers[badge_move_idx];
+    }
+}      
+
 void Shufflizer::Init() {
     gSelf = this;
     
@@ -950,6 +1040,109 @@ void Shufflizer::Init() {
                        "with an Ice Storm.";
             }
             return g_msgSearch_trampoline(msg_key);
+        });
+        
+    // SELECT MOVE BADGE POWER:
+    // Patch sequence start function to set variables on battle start.
+    g_seqSetSeq_trampoline = patch::HookFunction(
+        ttyd::seqdrv::seqSetSeq, [](
+            SeqIndex seq, const char *mapName, const char *beroName) {
+                if (seq == SeqIndex::kBattle) {
+                    if (gSelf->options_.select_move_power) {
+                        for (int32_t i = 0; i < 14; ++i) {
+                            int8_t badge_count =
+                                ttyd::mario_pouch::pouchEquipCheckBadge(
+                                    ItemId::POWER_JUMP + i);
+                            gMaxMoveBadgeCounts[i] = badge_count;
+                            gCurMoveBadgeCounts[i] = badge_count;
+                        }
+                    }
+                    gInBattle = true;
+                    gChangeMovePowersEnabled = gSelf->options_.select_move_power;
+                } else {
+                    gInBattle = false;
+                }
+                g_seqSetSeq_trampoline(seq, mapName, beroName);
+            });
+    // Patch pouch badge count function to use user-selected values.
+    g_pouchEquipCheckBadge_trampoline = patch::HookFunction(
+        ttyd::mario_pouch::pouchEquipCheckBadge, [](int16_t badge_id) {
+            // If badge id is move badge, and in battle with power selection
+            // enabled, return the current setting instead of the actual count.
+            if (gInBattle && gChangeMovePowersEnabled &&
+                badge_id >= ItemId::POWER_JUMP && badge_id <= ItemId::ICE_SMASH) {
+                const int32_t cur_count =
+                    gCurMoveBadgeCounts[badge_id - ItemId::POWER_JUMP];
+                return cur_count;
+            }
+            return g_pouchEquipCheckBadge_trampoline(badge_id);
+        });
+    // Patch move cost function to use user-selected move badge levels.
+    g_BtlUnit_GetWeaponCost_trampoline = patch::HookFunction(
+        ttyd::battle_unit::BtlUnit_GetWeaponCost, [](
+            BattleUnitInstance* battle_unit, AttackParams* attack_params) {
+                if (attack_params && gInBattle && gChangeMovePowersEnabled &&
+                    attack_params->item_id >= ItemId::POWER_JUMP &&
+                    attack_params->item_id <= ItemId::ICE_SMASH) {
+                    int32_t base_cost = attack_params->base_fp_cost;
+                    int32_t cur_count =
+                        gCurMoveBadgeCounts[attack_params->item_id -
+                                            ItemId::POWER_JUMP];
+                        
+                    if (cur_count > 1 &&
+                        (attack_params->item_id == ItemId::POWER_BOUNCE ||
+                         attack_params->item_id == ItemId::FIRE_DRIVE)) {
+                        // Better base for balance, but leave 1-badge cost alone.
+                        base_cost = 4;
+                    } else if (attack_params->item_id == ItemId::TORNADO_JUMP) {
+                        // It needs the help in any case.
+                        base_cost = 2;
+                    }
+                    // Linear scaling!  Stack 'em to the heavens!
+                    int32_t fp_cost = base_cost * cur_count -
+                        battle_unit->badges_equipped.flower_saver;
+                    return fp_cost < 1 ? 1 : fp_cost;
+                }
+                return g_BtlUnit_GetWeaponCost_trampoline(
+                    battle_unit, attack_params);
+            });
+    // Patch move window function to allow user input.
+    g_DrawWeaponWin_trampoline = patch::HookFunction(
+        ttyd::battle_menu_disp::DrawWeaponWin, []() {
+            gSelf->HandleMovePowerLevelSelection();
+            g_DrawWeaponWin_trampoline();
+        });
+        
+    // SUPERGUARD COST:
+    // Deduct SP on Superguard success, and disallow them if there isn't enough.
+    g_BattleActionCommandCheckDefence_trampoline = patch::HookFunction(
+        ttyd::battle_ac::BattleActionCommandCheckDefence, [](
+            BattleUnitInstance* battle_unit, AttackParams* attack_params) {
+            int8_t superguard_frames[7];
+            bool restore_superguard_frames = false;
+            // Temporarily disable Superguards if Star Power is too low.
+            if (ttyd::mario_pouch::pouchGetAP() <
+                gSelf->options_.superguard_cost) {
+                restore_superguard_frames = true;
+                ttyd::system::memcpy_as4(
+                    superguard_frames, common::kSuperguardFramesArr, 7);
+                for (int32_t i = 0; i < 7; ++i) {
+                    common::kSuperguardFramesArr[i] = 0;
+                }
+            }
+            const int32_t defense_result =
+                g_BattleActionCommandCheckDefence_trampoline(
+                    battle_unit, attack_params);
+            // Successful Superguard, subtract SP.
+            if (defense_result == 5) {
+                ttyd::mario_pouch::pouchAddAP(
+                    -gSelf->options_.superguard_cost);
+            }
+            if (restore_superguard_frames) {
+                ttyd::system::memcpy_as4(
+                    common::kSuperguardFramesArr, superguard_frames, 7);
+            }
+            return defense_result;
         });
     
     // MISC. PATCHES:
