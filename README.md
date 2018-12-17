@@ -1,4 +1,4 @@
-### Paper Mario: TTYD (U) Shufflizer v1.01 by Jdaster64
+### Paper Mario: TTYD (U) Shufflizer v1.11 by Jdaster64
 
 ### Credits  
 * **PistonMiner** for TTYD scripting disassembly, the initial code for the "rel" framework, and the elf2rel, gcipack, and rellink utilities. (GitHub repo for these tools [here](https://github.com/PistonMiner/ttyd-tools).)
@@ -10,7 +10,7 @@ The Paper Mario: TTYD **Shufflizer** is a mod that introduces the following rand
 * Randomizes all item shops such that they contain each normal item once, plus a selection of random recipes and badges.
 * (Optionally) shuffles the order of enemy encounters in the Pit of 100 Trials, and balances their stats according to their placement within the Pit.
 
-In addition, the player can pull up a menu to globally adjust enemies' HP, ATK, and DEF power, and toggle on/off Pit floor randomization (hold Z and use the D-Pad to make / adjust menu selections, and hold Z + press L to toggle on/off options).
+In addition, the player can pull up a menu to globally adjust enemies' HP, ATK, and DEF power, and toggle on/off Pit floor randomization (hold Z and use the D-Pad to make / adjust menu selections, and hold Z + press L to toggle on/off options).  If changing the power level of stacked badges is enabled (which is the case by default), you can do so by pressing L or R while the move in question is selected.
 
 More detailed information can be found at the following link: **[Shufflizer Doc](https://goo.gl/VhiqZH)**
 
