@@ -7,6 +7,36 @@ namespace ttyd::battle_unit {
 
 extern "C" {
     
+// Base status ailment vulnerability (in %).
+struct StatusVulnerability {
+    uint8_t     sleep;
+    uint8_t     stop;
+    uint8_t     dizzy;
+    uint8_t     poison;
+    uint8_t     confuse;
+    uint8_t     electric;
+    uint8_t     burn;
+    uint8_t     freeze;
+
+    uint8_t     huge;
+    uint8_t     tiny;
+    uint8_t     attack_up;
+    uint8_t     attack_down;
+    uint8_t     defense_up;
+    uint8_t     defense_down;
+    uint8_t     allergic;
+    uint8_t     fright;
+
+    uint8_t     gale_force;
+    uint8_t     fast;
+    uint8_t     slow;
+    uint8_t     dodgy;
+    uint8_t     invisible;
+    uint8_t     ohko;
+} __attribute__((__packed__));
+
+static_assert(sizeof(StatusVulnerability) == 0x16);
+    
 // Describes a class of battle unit.
 struct BattleUnitParams {
     uint32_t    type_id;        // e.g. 0xab = Bonetail
@@ -63,17 +93,17 @@ struct BattleUnitParams {
     uint32_t    _unk_0x94;
     uint32_t    _unk_0x98;
     
-    // Probably mostly script pointers?
-    void*       _unk_0x9c;
-    void*       _unk_0xa0;
-    void*       _unk_0xa4;
-    void*       _unk_0xa8;
+    const char* damaged_sfx_name;
+    const char* fire_damage_sfx_name;
+    const char* ice_damage_sfx_name;
+    const char* explosion_damage_sfx_name;
     void*       _unk_0xac;
-    void*       _unk_0xb0;
-    uint32_t    _unk_0xb4;  // Could be boolean, etc.
-    void*       _unk_0xb8;
-    void*       _unk_0xbc;
-    void*       _unk_0xc0;
+    StatusVulnerability*    default_status_vulnerability;
+    int8_t      num_parts;
+    uint8_t     _unk_0xb5[3];  // Probably unused / padding.
+    void*       parts;
+    void*       init_script;
+    void*       data_table;
 } __attribute__((__packed__));
 
 static_assert(sizeof(BattleUnitParams) == 0xC4);
@@ -132,8 +162,7 @@ struct BattleUnitInstance {
     uint32_t            type_id;
     uint32_t            _unk_0x00c;
     BattleUnitParams*   unit_class_params;
-    // Has various property flags (spiky, etc.) for current state, other stuff?
-    void*               _unk_0x014;
+    void*               parts_params;
     
     char                _unk_0x018[0xf0];
     int16_t             max_hp;
@@ -145,8 +174,20 @@ struct BattleUnitInstance {
     float               _unk_0x114;
     char                current_status_params[0x1e];  // TODO: sep. struct
     char                _unk_0x136[0xe];
-    void*               base_status_vulnerability;    // TODO: sep. struct
-    char                _unk_0x148[0x198];
+    StatusVulnerability*    base_status_vulnerability;
+    char                _unk_0x148[0x144];
+    void*               wait_script;
+    uint32_t            wait_script_thread;
+    uint32_t            _unk_0x294;
+    void*               phase_script;
+    uint32_t            phase_script_thread;
+    void*               attack_script;
+    void*               confuse_script;
+    uint32_t            attack_script_thread;
+    uint32_t            _unk_0x2ac;
+    void*               damage_script;
+    uint32_t            damage_script_thread;
+    char                _unk_0x2b8[0x28];
     BattleUnitBadgesEquipped    badges_equipped;
     char                _unk_0x308[0x82c];
 } __attribute__((__packed__));

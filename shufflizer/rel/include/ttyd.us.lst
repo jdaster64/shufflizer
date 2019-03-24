@@ -308,6 +308,7 @@
 800ee688:stg0_00_init
 
 // battle_ac.o
+800fa1a0:BattleACPadCheckRecordTrigger
 800fa1b8:BattleActionCommandCheckDefence
 
 // battle_damage.o

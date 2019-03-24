@@ -18,7 +18,7 @@ extern "C" {
 // BattleActionCommandGetDifficulty battle_ac.o 
 // BattleActionCommandResetDefenceResult battle_ac.o 
 // BattleActionCommandGetDefenceResult battle_ac.o 
-// BattleACPadCheckRecordTrigger battle_ac.o 
+int32_t BattleACPadCheckRecordTrigger(int32_t frames, int32_t buttons);
 int32_t BattleActionCommandCheckDefence(
     battle_unit::BattleUnitInstance* battle_unit,
     common::AttackParams* attack_params);

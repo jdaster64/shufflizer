@@ -71,7 +71,7 @@ namespace ActorTypeId {
         LORD_CRUMP_PROLOGUE,
         GUS,
         BLOOPER,
-        LEFT_TENTACLE,              // TODO: verify left / right order.
+        LEFT_TENTACLE,
         RIGHT_TENTACLE,
         KOOPATROL,
         MAGIKOOPA,
@@ -123,7 +123,7 @@ namespace ActorTypeId {
         FIRE_BRO,
         RED_CHOMP,
         DARK_KOOPATROL,
-        IRON_CLEFT_RED,             // TODO: Verify red/green order
+        IRON_CLEFT_RED,
         IRON_CLEFT_GREEN,
         BOWSER_CH_3,
         RAWK_HAWK,
@@ -156,13 +156,13 @@ namespace ActorTypeId {
         BULLET_BILL,
         BULKY_BOB_OMB,
         CORTEZ,
-        CORTEZ_005E,                // Not sure what this represents
-        CORTEZ_WEAPON_1,            // TODO: identify weapons
-        CORTEZ_WEAPON_2,
-        CORTEZ_WEAPON_3,
-        CORTEZ_WEAPON_4,
+        CORTEZ_BONE_PILE,
+        CORTEZ_SWORD,
+        CORTEZ_HOOK,
+        CORTEZ_RAPIER,
+        CORTEZ_SABER,
         LORD_CRUMP_CH_5,
-        X_NAUTS_CRUMP_FORMATION_1,  // TODO: identify formations
+        X_NAUTS_CRUMP_FORMATION_1,
         X_NAUTS_CRUMP_FORMATION_2,
         X_NAUTS_CRUMP_FORMATION_3,
         RUFF_PUFF,
@@ -170,10 +170,10 @@ namespace ActorTypeId {
         SPIKY_PARABUZZY,
         DARK_BOO,
         SMORG,
-        SMORG_MIASMA_FORM_1,        // TODO: identify forms / tentacles
-        SMORG_MIASMA_FORM_2,
-        SMORG_MIASMA_FORM_3,
-        SMORG_MIASMA_FORM_4,
+        SMORG_MIASMA_TENTACLE_A,
+        SMORG_MIASMA_TENTACLE_B,
+        SMORG_MIASMA_TENTACLE_C,
+        SMORG_MIASMA_CLAW,
         ICE_PUFF,
         FROST_PIRANHA,
         MOON_CLEFT,
@@ -213,7 +213,7 @@ namespace ActorTypeId {
         SHADOW_QUEEN_PHASE_1,
         SHADOW_QUEEN_INVINCIBLE,
         SHADOW_QUEEN_PHASE_2,
-        LEFT_RIGHT_HAND,            // TODO: Confirm these share a slot
+        LEFT_RIGHT_HAND,
         DEAD_HANDS,
         GLOOMBA,
         PARAGLOOMBA,
