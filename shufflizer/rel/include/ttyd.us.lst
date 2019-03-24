@@ -73,6 +73,9 @@
 80010c64:dispReInit
 80010c70:dispInit
 
+// icondrv.o
+80019120:iconNumberDispGx
+
 // seqdrv.o
 8002e1e4:seqCheckSeq
 8002e200:seqGetNextSeq
@@ -337,6 +340,9 @@
 80126968:BtlUnit_GetWeaponCost
 80128fe0:BtlUnit_Entry
 
+// statuswindow.o
+8013cb24:statusWinDisp
+
 // runtime.c
 802648BC:_savefpr_14
 802648C0:_savefpr_15
@@ -434,3 +440,6 @@
 // 8029A908:Undo
 // 8029AB40:OSUnlink
 // 8029AD14:__OSModuleInit
+
+// mtx.a mtx.c
+8029e230:PSMTXTrans

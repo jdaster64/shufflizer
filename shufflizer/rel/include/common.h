@@ -42,5 +42,6 @@ int8_t GetPitSequence();
 bool GetSavedFlagValue(int32_t flag);
 bool HasKeyItemInInventory(int16_t item_id);
 void* GetBattleWindowDataOffset();
+float GetStatusWindowHeight();
 
 }

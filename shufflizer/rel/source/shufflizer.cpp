@@ -10,14 +10,17 @@
 #include <ttyd/common_types.h>
 #include <ttyd/event.h>
 #include <ttyd/evt_mobj.h>
+#include <ttyd/icondrv.h>
 #include <ttyd/itemdrv.h>
 #include <ttyd/mario_pouch.h>
+#include <ttyd/mtx.h>
 #include <ttyd/mobjdrv.h>
 #include <ttyd/msgdrv.h>
 #include <ttyd/OSCache.h>
 #include <ttyd/OSLink.h>
 #include <ttyd/seqdrv.h>
 #include <ttyd/sound.h>
+#include <ttyd/statuswindow.h>
 #include <ttyd/string.h>
 #include <ttyd/system.h>
 
@@ -308,6 +311,7 @@ int32_t (*g_BtlUnit_GetWeaponCost_trampoline)(
 void (*g_DrawWeaponWin_trampoline)() = nullptr;
 int32_t (*g_BattleActionCommandCheckDefence_trampoline)(
     BattleUnitInstance*, AttackParams*) = nullptr;
+void (*g_statusWinDisp_trampoline)() = nullptr;
     
 // Global state sentinels for item replacement functions.
 int32_t gShineBlockFlag = -1;
@@ -1143,6 +1147,23 @@ void Shufflizer::Init() {
                     common::kSuperguardFramesArr, superguard_frames, 7);
             }
             return defense_result;
+        });
+    // Show the current Star Power in numeric form underneath the status bar.
+    g_statusWinDisp_trampoline = patch::HookFunction(
+        ttyd::statuswindow::statusWinDisp, []() {
+            // Draw the normal menu stuff.
+            g_statusWinDisp_trampoline();
+            
+            // Don't try to display SP if the status bar is not on-screen.
+            float menu_height = common::GetStatusWindowHeight();
+            if (menu_height < 100.f || menu_height > 330.f) return;
+            
+            float matrix[16];
+            int32_t unknown_param = -1;
+            int32_t current_AP = ttyd::mario_pouch::pouchGetAP();
+            ttyd::mtx::PSMTXTrans(matrix, 192.f, menu_height - 100.f, 0.f);
+            ttyd::icondrv::iconNumberDispGx(
+                matrix, current_AP, 1 /* is_small */, &unknown_param);
         });
     
     // MISC. PATCHES:

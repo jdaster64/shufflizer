@@ -51,6 +51,11 @@ const uint32_t kKeyItemsOffset      = 0x00A0;
 char** kBattlePtr = reinterpret_cast<char**>(r13 + 0x1C70);
 const uint32_t kBattleMenuOffset    = 0x1C78;
 
+// Status window offsets.
+// TODO: Figure out what this structure actually is.
+char** kUnknownStatusWindowStructPtr = reinterpret_cast<char**>(r13 + 0x1CCC);
+const uint32_t kStatusWindowHeightOffset = 0x24;
+
 const char* GetCurrentArea() {
     if (!*kSaveDataPtr) return nullptr;
     return reinterpret_cast<const char*>(
@@ -101,6 +106,14 @@ void* GetBattleWindowDataOffset() {
     void** wrapper = reinterpret_cast<void**>(*kBattlePtr + kBattleMenuOffset);
     if (!*wrapper) return nullptr;
     return *wrapper;
+}
+
+float GetStatusWindowHeight() {
+    if (!*kUnknownStatusWindowStructPtr) return 0.0f;
+    float* height =
+        reinterpret_cast<float*>(
+            *kUnknownStatusWindowStructPtr + kStatusWindowHeightOffset);
+    return *height;
 }
 
 }
