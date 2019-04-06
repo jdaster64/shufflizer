@@ -35,6 +35,9 @@ struct SeedState {
     int16_t field_items[286];
     ShopInfo shops[ShopType::SHOP_MAX_ID];
     int8_t pit_floors[100];
+    int16_t charlieton_pit_items[54];
+    int16_t special_field_items[12];  // Last is only for padding
+    int16_t ultra_hammer_flag;
 };
 
 }

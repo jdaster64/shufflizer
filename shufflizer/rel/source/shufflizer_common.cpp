@@ -1,5 +1,7 @@
 #include "shufflizer_common.h"
 
+#include <ttyd/string.h>
+
 namespace mod::shufflizer {
 
 namespace {
@@ -72,6 +74,22 @@ int32_t GetFieldItemIndexFromSavedFlag(
     // Flag was not found in the bitfield.
     return -1;
 }
+
+int32_t GetFieldItemSavedFlagIdFromIndex(
+    const SavedFlagRow* start, const SavedFlagRow* end, int32_t index) {
+    if (index < 0) return -1;
+    int32_t num_flags_seen = 0;
+    for (; start < end; ++start) {
+        for (int32_t bit = 0; bit < 16; ++bit) {
+            if (start->bits & (1U << bit)) {
+                if (num_flags_seen == index) return start->start_offset + bit;
+                ++num_flags_seen;
+            }
+        }
+    }
+    // Not enough flags in bitfield to reach index.
+    return -1;
+}
     
 int32_t GetLevelFactorFromPitFloor(int32_t floor) {
     if (floor < 0 or floor >= 100) return 0;  // Shouldn't ever happen.
@@ -102,6 +120,34 @@ int32_t GetPitNpcTypeFromFloor(int32_t floor) {
     if (floor < 90) return floor % 5 + floor / 10 * 5 + 1;
     if (floor < 99) return 46 + (floor - 90) % 4;
     return 51;
+}
+
+const char* GetReplacementMessage(const char* msg_key) {
+    // TODO: Consider replacing these compares with a single hash and
+    // comparison if many more strings are added.
+    if (!ttyd::string::strcmp(msg_key, "in_cake")) {
+        return "Strawberry Cake";
+    } else if (!ttyd::string::strcmp(msg_key, "msg_kame_no_noroi")) {
+        return "Has a chance of inducing Slow \n"
+               "status on all foes.";
+    } else if (!ttyd::string::strcmp(msg_key, "msg_cake")) {
+        return "Scrumptious strawberry cake \n"
+               "that heals 15 HP and 15 FP.";
+    } else if (!ttyd::string::strcmp(msg_key, "msg_teki_kyouka")) {
+        return "Boosts foes' level by 10, but \n"
+               "temporarily gives them +3 ATK!";
+    } else if (!ttyd::string::strcmp(msg_key, "msg_ice_candy")) {
+        return "A dessert made by Zess T.\n"
+               "Gives 15 FP, but might freeze!";
+    } else if (!ttyd::string::strcmp(msg_key, "list_ice_candy")) {
+        return "A dessert made by Zess T.\n"
+               "Gives 15 FP, but might freeze!\n"
+               "Made by mixing Honey Syrup \n"
+               "with an Ice Storm.";
+    }
+    
+    // No string for the given message.
+    return nullptr;
 }
 
 }

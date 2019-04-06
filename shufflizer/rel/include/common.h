@@ -30,6 +30,7 @@ extern int32_t* kPiantaParlorItemArr;
 extern const int32_t kSavedWordFlagBaseValue;
 extern const int32_t kPitModuleNpcArrOffset;
 extern const int32_t kPitModuleCharlietonChanceOffset;
+extern const int32_t kMujModuleFlavioDesiredItemOffset;
 extern const int32_t kObjectChestScriptPtrOffset;
 extern const int32_t kObjectCollectionExprOffset;
 extern const int32_t kUltraHammerChestDespawnIdOffset;

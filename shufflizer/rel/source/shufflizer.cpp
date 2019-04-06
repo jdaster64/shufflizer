@@ -201,6 +201,14 @@ void InitializeItemDataChanges() {
     item_db[ItemId::CAKE].sell_price = 15;
     item_db[ItemId::CAKE].hp_restored = 15;
     item_db[ItemId::CAKE].fp_restored = 15;
+    item_db[ItemId::FRESH_PASTA].buy_price = 15;
+    item_db[ItemId::FRESH_PASTA].sell_price = 10;
+    item_db[ItemId::KOOPASTA].buy_price = 20;
+    item_db[ItemId::KOOPASTA].sell_price = 15;
+    item_db[ItemId::SPICY_PASTA].buy_price = 30;
+    item_db[ItemId::SPICY_PASTA].sell_price = 20;
+    item_db[ItemId::INK_PASTA].buy_price = 30;
+    item_db[ItemId::INK_PASTA].sell_price = 20;
     item_db[ItemId::KOOPA_CURSE].icon_id = kKoopaCurseIconId;
     item_db[ItemId::FP_DRAIN_P].bp_cost = 1;
     // Because, let's be honest.
@@ -499,6 +507,40 @@ void Shufflizer::InitializeShuffleSeed() {
             seed_state_.pit_floors[i] = pit_floors[(i+1) * 9 / 10];
         }
     }
+    
+    // 14. Set up Charlieton Pit items (uses the same pool as item shops).
+    ShuffleRange(shop_items, shop_items + 160);
+    ttyd::system::memcpy_as4(
+        seed_state_.charlieton_pit_items, shop_items, 54 * sizeof(int16_t));
+        
+    // 15. Set up shuffled miscellaneous items.
+    pos = shop_items;
+    for (int32_t i = ItemId::COCONUT; i < ItemId::PEACHY_PEACH; ++i) {
+        *pos++ = i;
+    }
+    // Cake Mix should remain in the same place, shuffle the rest.
+    pos = shop_items + (ItemId::CAKE_MIX - ItemId::COCONUT);
+    swap_pos = shop_items + (ItemId::PEACHY_PEACH - ItemId::COCONUT);
+    *pos = ItemId::PEACHY_PEACH;
+    ShuffleRange(shop_items, swap_pos);
+    *swap_pos = *pos;
+    *pos = ItemId::CAKE_MIX;
+    
+    ttyd::system::memcpy_as4(
+        seed_state_.special_field_items, shop_items, 12 * sizeof(int16_t));
+        
+    // 16. Save the final id of the Ultra Hammer flag for convenience.
+    // TODO: Add a specific sentinel if it ended up in Charlieton's shop.
+    int32_t ultra_hammer_index = -1;
+    for (int32_t i = 0; i < 286; ++i) {
+        if (seed_state_.field_items[i] == ItemId::ULTRA_HAMMER) {
+            ultra_hammer_index = i;
+            break;
+        }
+    }
+    seed_state_.ultra_hammer_flag = GetFieldItemSavedFlagIdFromIndex(
+        kSavedFlags, kSavedFlags + sizeof(kSavedFlags) / sizeof(kSavedFlags[0]),
+        ultra_hammer_index);
 }
 
 void Shufflizer::OnModuleLoaded(ttyd::oslink::OSModuleInfo* module_info) {
@@ -508,11 +550,22 @@ void Shufflizer::OnModuleLoaded(ttyd::oslink::OSModuleInfo* module_info) {
     
     // Pit of 100 Trials.
     if (module_id == ModuleId::JON) {
-        // Assign Charlieton a set of six random items.
+        int8_t pit_floor = common::GetPitSequence();
         int32_t* item_pos = common::kPitCharlietonItemArr;
-        for (int32_t i = 0; i < 6; ++i) {
-            *item_pos++ = GetRandomItemFromBitfield(
-                kShopAllItems, kShopAllItems + 6, ItemId::THUNDER_BOLT);
+        
+        if (options_.charlieton_fixed) {
+            // Read from the floor's predetermined set of items / badges.
+            int32_t offset = pit_floor / 10 * 6;
+            if (offset < 0 || offset > 48) offset = 0;
+            for (int32_t i = 0; i < 6; ++i) {
+                *item_pos++ = seed_state_.charlieton_pit_items[offset + i];
+            }
+        } else {
+            // Assign Charlieton a set of six random items.
+            for (int32_t i = 0; i < 6; ++i) {
+                *item_pos++ = GetRandomItemFromBitfield(
+                    kShopAllItems, kShopAllItems + 6, ItemId::THUNDER_BOLT);
+            }
         }
         
         // Make Charlieton always appear.
@@ -528,6 +581,14 @@ void Shufflizer::OnModuleLoaded(ttyd::oslink::OSModuleInfo* module_info) {
             *pit_floor_npc_id_ptr =
                 GetPitNpcTypeFromFloor(seed_state_.pit_floors[pit_floor]);
         }
+    }
+    
+    // If shuffling misc. items is allowed and module loaded is Keelhaul Key,
+    // replace Flavio's desired item with its shuffled replacement.
+    if (options_.shuffle_misc_items && module_id == ModuleId::MUJ) {
+        *reinterpret_cast<int32_t*>(
+            module_ptr + common::kMujModuleFlavioDesiredItemOffset) = 
+                seed_state_.special_field_items[0];
     }
     
     // Handle shop info for most shops, based on module loaded.
@@ -652,6 +713,15 @@ void Shufflizer::OnModuleLoaded(ttyd::oslink::OSModuleInfo* module_info) {
 }
 
 int16_t Shufflizer::ReplaceGeneralItem(int16_t id, int32_t collection_expr) {
+    // Check for miscellaneous items, if shuffling them is enabled.
+    if (options_.shuffle_misc_items && 
+        id >= ItemId::COCONUT && id <= ItemId::PEACHY_PEACH) {
+        // Lazy fixes for Mario showing certain items to an NPC in a script.
+        if (!ttyd::string::strcmp(common::GetCurrentMap(), "muj_01") ||
+            !ttyd::string::strcmp(common::GetCurrentArea(), "rsh")) return id;
+        return seed_state_.special_field_items[id - ItemId::COCONUT];
+    }
+    
     // Special cases.
     int32_t flag = collection_expr - common::kSavedWordFlagBaseValue;
     if (collection_expr == -1) {
@@ -1018,31 +1088,12 @@ void Shufflizer::Init() {
             return g_BtlUnit_Entry_trampoline(slot_info, unk0, unk1);
         });
     
+    // TEXT REPLACEMENT:
     // Patch in fixed text for Trade Off, Cake, and Koopa Curse, etc.
     g_msgSearch_trampoline = patch::HookFunction(
         ttyd::msgdrv::msgSearch, [](const char* msg_key) {
-            // TODO: Consider replacing these compares with a single hash and
-            // comparison if many more strings are added.
-            if (!ttyd::string::strcmp(msg_key, "in_cake")) {
-                return "Strawberry Cake";
-            } else if (!ttyd::string::strcmp(msg_key, "msg_kame_no_noroi")) {
-                return "Has a chance of inducing Slow \n"
-                       "status on all foes.";
-            } else if (!ttyd::string::strcmp(msg_key, "msg_cake")) {
-                return "Scrumptious strawberry cake \n"
-                       "that heals 15 HP and 15 FP.";
-            } else if (!ttyd::string::strcmp(msg_key, "msg_teki_kyouka")) {
-                return "Boosts foes' level by 10, but \n"
-                       "temporarily gives them +3 ATK!";
-            } else if (!ttyd::string::strcmp(msg_key, "msg_ice_candy")) {
-                return "A dessert made by Zess T.\n"
-                       "Gives 15 FP, but might freeze!";
-            } else if (!ttyd::string::strcmp(msg_key, "list_ice_candy")) {
-                return "A dessert made by Zess T.\n"
-                       "Gives 15 FP, but might freeze!\n"
-                       "Made by mixing Honey Syrup \n"
-                       "with an Ice Storm.";
-            }
+            const char* replacement = GetReplacementMessage(msg_key);
+            if (replacement) return replacement;
             return g_msgSearch_trampoline(msg_key);
         });
         

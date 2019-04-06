@@ -52,6 +52,12 @@ int16_t GetRandomItemFromBitfield(
 int32_t GetFieldItemIndexFromSavedFlag(
     const SavedFlagRow* start, const SavedFlagRow* end, int32_t flag);
     
+// Returns the flag at a given index in an array of SavedFlagRows
+// (which should represent the flag indices of all shuffled 'field items').
+// If the array does not have enough indices, returns -1.
+int32_t GetFieldItemSavedFlagIdFromIndex(
+    const SavedFlagRow* start, const SavedFlagRow* end, int32_t index);
+    
 // Returns the "level factor", i.e. an indicator of relative nonlinear strength,
 // given the (zero-indexed) floor a Pit enemy appears on / should appear on.
 // The minimum level factor is 0, and the maximum (for the 90's) is 20.
@@ -66,6 +72,10 @@ int32_t ApplyPitBalanceParameters(
 // Get NPC type to spawn based on the (zero-indexed) floor it would spawn on.
 // Return value unspecified for treasure floors or floors out of range.
 int32_t GetPitNpcTypeFromFloor(int32_t floor);
+
+// Returns a replacement message based on the id of the message desired,
+// or nullptr if there is no custom message to show.
+const char* GetReplacementMessage(const char* msg_key);
     
 //// IMPLEMENTATION DETAILS
 

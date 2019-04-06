@@ -29,6 +29,7 @@ int32_t* kPiantaParlorItemArr   = reinterpret_cast<int32_t*>(0x80419E34);
 const int32_t kSavedWordFlagBaseValue = -130000000;
 const int32_t kPitModuleNpcArrOffset  = 0xEF90;
 const int32_t kPitModuleCharlietonChanceOffset = 0x11EA4;
+const int32_t kMujModuleFlavioDesiredItemOffset = 0x1FA04;
 const int32_t kObjectChestScriptPtrOffset = 0x1D8;
 const int32_t kObjectCollectionExprOffset = 0x1E4;
 const int32_t kUltraHammerChestDespawnIdOffset = 0x3C8E4;
