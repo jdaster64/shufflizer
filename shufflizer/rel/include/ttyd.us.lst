@@ -301,6 +301,7 @@
 
 // mario_pouch.o
 800d3300:pouchEquipCheckBadge
+800d3bb8:pouchGetMaxAP
 800d3c00:pouchAddAP
 800d3c44:pouchGetAP
 

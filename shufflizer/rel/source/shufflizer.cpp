@@ -13,6 +13,7 @@
 #include <ttyd/icondrv.h>
 #include <ttyd/itemdrv.h>
 #include <ttyd/mario_pouch.h>
+#include <ttyd/mariost.h>
 #include <ttyd/mtx.h>
 #include <ttyd/mobjdrv.h>
 #include <ttyd/msgdrv.h>
@@ -713,6 +714,10 @@ void Shufflizer::OnModuleLoaded(ttyd::oslink::OSModuleInfo* module_info) {
 }
 
 int16_t Shufflizer::ReplaceGeneralItem(int16_t id, int32_t collection_expr) {
+    // If in a battle or in the pause menu (i.e. using an item on the field),
+    // don't replace the item.
+    if (gInBattle || ttyd::mariost::marioStGetSystemLevel() == 15) return -1;
+    
     // Check for miscellaneous items, if shuffling them is enabled.
     if (options_.shuffle_misc_items && 
         id >= ItemId::COCONUT && id <= ItemId::PEACHY_PEACH) {
@@ -1204,6 +1209,9 @@ void Shufflizer::Init() {
         ttyd::statuswindow::statusWinDisp, []() {
             // Draw the normal menu stuff.
             g_statusWinDisp_trampoline();
+            
+            // Don't display SP if Mario hasn't gotten any Star Powers yet.
+            if (ttyd::mario_pouch::pouchGetAP() < 100) return;
             
             // Don't try to display SP if the status bar is not on-screen.
             float menu_height = common::GetStatusWindowHeight();

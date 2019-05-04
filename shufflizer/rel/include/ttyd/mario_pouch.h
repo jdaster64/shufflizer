@@ -37,7 +37,7 @@ int32_t pouchEquipCheckBadge(int16_t badge_id);
 // pouchGetJumpLv
 // pouchSetAudienceNum
 // pouchGetAudienceNum
-// pouchGetMaxAP
+int32_t pouchGetMaxAP();
 // pouchSetAP
 void pouchAddAP(int32_t star_power);
 int32_t pouchGetAP();
