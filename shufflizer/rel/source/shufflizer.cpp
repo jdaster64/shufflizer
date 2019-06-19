@@ -1211,7 +1211,7 @@ void Shufflizer::Init() {
             g_statusWinDisp_trampoline();
             
             // Don't display SP if Mario hasn't gotten any Star Powers yet.
-            if (ttyd::mario_pouch::pouchGetAP() < 100) return;
+            if (ttyd::mario_pouch::pouchGetMaxAP() < 100) return;
             
             // Don't try to display SP if the status bar is not on-screen.
             float menu_height = common::GetStatusWindowHeight();
