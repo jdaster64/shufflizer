@@ -101,6 +101,11 @@ const uint32_t kShopFillerItems[]     = {
 const uint32_t kShopAllItems[]     = { 
     0xffffffffU, 0xfffe001fU, 0xffffffffU, 0x3bff0fffU, 0x0fffffffU, 0x078ffff7U
 };
+// Rebalanced price tiers for badges (excluding L & W Emblems).
+const uint32_t kBadgePriceTiers[] = {
+    0x32222633U, 0x66262224U, 0x77662244U, 0x55778888U, 0x33555555U, 0x44444773U,
+    0x32224581U, 0x63355553U, 0x41182216U, 0x11111564U, 0x04111411U
+};
 // Offset from the start of shops' modules to their shop info, following the
 // order of the ShopType enum.
 const uint32_t kShopOffsets[]   = {
@@ -177,7 +182,7 @@ uint32_t* kTradeOffScriptHook   = reinterpret_cast<uint32_t*>(0x80369b34);
 
 // Addresses to write patches to Charlieton code (to put maxes on item prices)
 void* kCharlietonGorListHook    = reinterpret_cast<uint32_t*>(0x8023c0e4);
-void* kCharlietonPitListHook    = reinterpret_cast<uint32_t*>(0x8023c124);
+void* kCharlietonPitListHook    = reinterpret_cast<uint32_t*>(0x8023c120);
 void* kCharlietonGorItemHook    = reinterpret_cast<uint32_t*>(0x8023d26c);
 void* kCharlietonPitItemHook    = reinterpret_cast<uint32_t*>(0x8023d2e0);
 // Addresses to write patches to fix Blooper crash.
@@ -215,7 +220,8 @@ void InitializeItemDataChanges() {
     // Because, let's be honest.
     item_db[ItemId::TORNADO_JUMP].bp_cost = 1;
     
-    // Set recipe prices based on sell price, badge Star Piece costs on BP cost,
+    // Set coin buy / discount / sell prices for badges to rebalanced values,
+    // badge Star Piece costs on BP cost, recipe prices based on sell price,
     // and fix unused items' and badges' sort order.
     for (int32_t i = 0; i < ItemId::MAX_ITEM_ID; ++i) {
         ItemData& item = item_db[i];
@@ -229,6 +235,19 @@ void InitializeItemDataChanges() {
             }
         } else if (i >= ItemId::POWER_JUMP) {
             item.star_piece_price = item.bp_cost + 1;
+            
+            if (i < ItemId::L_EMBLEM) {
+                const int32_t word_index = (i - ItemId::POWER_JUMP) >> 3;
+                const int32_t nybble_index = (i - ItemId::POWER_JUMP) & 7;
+                const int32_t tier = 
+                    (kBadgePriceTiers[word_index] >> (nybble_index << 2)) & 15;
+                if (tier > 0) {
+                    item.buy_price = tier > 4 ? tier * 50 - 100 : tier * 25;
+                }
+            }
+            // higher discounted price, since most prices in general are lower
+            item.discount_price = item.buy_price * 4 / 5;
+            item.sell_price = item.buy_price >> 1;
             
             if (item.type_sort_order > 0x49) {
                 item.type_sort_order += 4;
