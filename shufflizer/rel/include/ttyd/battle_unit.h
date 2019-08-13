@@ -44,8 +44,8 @@ struct BattleUnitParams {
     
     int16_t     max_hp;
     int16_t     max_fp;
-    uint8_t     _unk_0x0c;      // always 0x01?
-    uint8_t     _unk_0x0d;      // always 0x01?
+    int8_t      danger_hp;
+    int8_t      peril_hp;
     int8_t      level;
     int8_t      bonus_exp;
     int8_t      bonus_coin;
