@@ -642,8 +642,8 @@ namespace ItemId {
 }
     
 struct AttackParams {
-    char*           _unk_0x00;
-    uint16_t        _unk_0x04;
+    const char*     name_msg;
+    uint16_t        icon_id;
     uint16_t        _unk_0x06;
     uint16_t        _unk_0x08;
     int16_t         item_id;
@@ -656,6 +656,7 @@ struct AttackParams {
     uint32_t        _unk_0x18;  // Possibly separate 8-bit values, or flags?
     
     char*           base_damage_fn;
+    // Parameters for damage function.
     int32_t         base_damage;
     int32_t         base_damage_2;
     int32_t         base_damage_3;
@@ -666,6 +667,7 @@ struct AttackParams {
     uint32_t        _unk_0x3c;
     
     char*           base_fp_damage_fn;
+    // Parameters for FP damage function.
     int32_t         base_fp_damage;
     uint32_t        _unk_0x48;
     uint32_t        _unk_0x4c;
@@ -687,7 +689,7 @@ struct AttackParams {
     uint8_t         _unk_0x6d;
     uint8_t         _unk_0x6e;  // Always 0x03?
     uint8_t         _unk_0x6f;  // Always 0x02?
-    char*           _unk_0x70;
+    const char*     ac_msg;
     uint32_t        _unk_0x74_flags;
     uint32_t        _unk_0x78_flags;
     uint32_t        _unk_0x7c_flags;  // May be flags; generally similar values.

@@ -237,7 +237,7 @@ int32_t BtlUnit_GetWeaponCost(
 // BtlUnit_GetExp
 // BtlUnit_CheckPinchStatus
 // BtlUnit_SetParamToPouch
-// BtlUnit_ReviseHpFp
+void BtlUnit_ReviseHpFp(BattleUnitInstance* battle_unit);
 // BtlUnit_SetParamFromPouch
 // BtlUnit_CanActStatus
 // BtlUnit_CanGuardStatus

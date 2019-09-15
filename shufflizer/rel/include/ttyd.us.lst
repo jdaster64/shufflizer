@@ -301,9 +301,19 @@
 
 // mario_pouch.o
 800d3300:pouchEquipCheckBadge
+800d35a8:pouchReviseMarioParam
 800d3bb8:pouchGetMaxAP
 800d3c00:pouchAddAP
 800d3c44:pouchGetAP
+800d3c50:pouchSetMaxFP
+800d3c68:pouchSetFP
+800d3c8c:pouchGetMaxFP
+800d3c98:pouchGetFP
+800d3ce8:pouchSetMaxHP
+800d3d00:pouchSetHP
+800d3d24:pouchGetMaxHP
+800d3d30:pouchGetHP
+800d5eb0:pouchGetPtr
 
 // sound.o
 800e0ca0:SoundEfxPlayEx
@@ -327,7 +337,7 @@
 // 800fbd8c:BattleSetStatusDamageFromWeapon
 // 800fbed8:BattleSetStatusDamage
 // 800fcf54:_getRegistStatus
-// 800fd030:_getSickStatusParam
+800fd030:_getSickStatusParam
 // 800fd490:_getSickStatusRate
 800fd680:BattleCalculateFpDamage
 800fd790:BattleCalculateDamage
@@ -339,6 +349,7 @@
 
 // battle_unit.o
 80126968:BtlUnit_GetWeaponCost
+80126fe8:BtlUnit_ReviseHpFp
 80128fe0:BtlUnit_Entry
 
 // statuswindow.o

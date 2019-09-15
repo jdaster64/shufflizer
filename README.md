@@ -1,6 +1,6 @@
-### Paper Mario: TTYD (U) Shufflizer v1.30 by Jdaster64
+### Paper Mario: TTYD (U) Shufflizer v2.00 by Jdaster64
 
-### Credits  
+### Credits
 * **PistonMiner** for TTYD scripting disassembly, the initial code for the "rel" framework, and the elf2rel, gcipack, and rellink utilities. (GitHub repo for these tools [here](https://github.com/PistonMiner/ttyd-tools).)
 * PistonMiner and **Zephiles** for their work on TTYD symbol maps, and the GCI loader code (GitHub repo for the loader [here](https://github.com/Zephiles/TTYD-Randomizers).)
 

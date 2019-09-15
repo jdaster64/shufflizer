@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <shufflizer_state.h>
 
 // Commonly used internal types and helper functions for the Shufflizer mod.
 namespace mod::shufflizer {
@@ -36,10 +37,11 @@ void ShuffleRange(T* start, T* end);
 // Converts an array of bits from `start` to `end` to an array of item IDs
 // starting at `output`, and returns the end of the array.
 // (It is assumed that you own sufficient memory to store the entire array).
-// The Nth bit in the bitfield corresponds to item ID `item_offset` + N.
+// The Nth set of bits in the bitfield corresponds to item ID `item_offset` + N,
+// and each set of bits is `bits_per_item` long (should be 1, 2, or 4).
 int16_t* CreateItemArrayFromBitfield(
     const uint32_t* start, const uint32_t* end, int16_t* output,
-    int32_t item_offset);
+    int32_t item_offset, int32_t bits_per_item = 1);
     
 // Returns the item represented by a randomly selected bit in a bitfield
 // plus the given ID offset.
@@ -75,7 +77,7 @@ int32_t GetPitNpcTypeFromFloor(int32_t floor);
 
 // Returns a replacement message based on the id of the message desired,
 // or nullptr if there is no custom message to show.
-const char* GetReplacementMessage(const char* msg_key);
+const char* GetReplacementMessage(const char* msg_key, const SeedState& state);
     
 //// IMPLEMENTATION DETAILS
 

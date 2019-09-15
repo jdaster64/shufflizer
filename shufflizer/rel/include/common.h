@@ -16,6 +16,10 @@ extern ttyd::common::AttackParams* kUltraHammerRecoilParams;
 extern ttyd::common::AttackParams* kGulpRecoilParams;
 extern ttyd::common::AttackParams* kTradeOffParams;
 extern ttyd::common::AttackParams* kKoopaCurseParams;
+extern ttyd::common::AttackParams* kHammerThrowParams;
+extern ttyd::common::AttackParams* kPiercingBlowParams;
+extern ttyd::common::AttackParams* kSuperChargeParams;
+extern ttyd::common::AttackParams* kSuperChargePartnerParams;
 extern int8_t* kGuardFramesArr;
 extern int8_t* kSuperguardFramesArr;
 

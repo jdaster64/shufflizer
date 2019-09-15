@@ -18,6 +18,14 @@ AttackParams*
 AttackParams* kGulpRecoilParams = reinterpret_cast<AttackParams*>(0x8037CE24);
 AttackParams* kTradeOffParams   = reinterpret_cast<AttackParams*>(0x80369B60);
 AttackParams* kKoopaCurseParams = reinterpret_cast<AttackParams*>(0x8036AC3C);
+AttackParams* kHammerThrowParams
+    = reinterpret_cast<AttackParams*>(0x80354C28);
+AttackParams* kPiercingBlowParams
+    = reinterpret_cast<AttackParams*>(0x80354CE8);
+AttackParams* kSuperChargeParams 
+    = reinterpret_cast<AttackParams*>(0x80355228);
+AttackParams* kSuperChargePartnerParams
+    = reinterpret_cast<AttackParams*>(0x803552E8);
 int8_t* kGuardFramesArr         = reinterpret_cast<int8_t*>(0x802EE018);
 int8_t* kSuperguardFramesArr    = reinterpret_cast<int8_t*>(0x802EE020);
 int32_t* kDazzleItemArr         = reinterpret_cast<int32_t*>(0x803AD038);

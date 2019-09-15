@@ -5,6 +5,27 @@
 namespace ttyd::mario_pouch {
 
 extern "C" {
+    
+struct PouchWork {
+    char        _unk_0x000[0x070];  // Party-related data
+    int16_t     current_hp;
+    int16_t     max_hp;
+    int16_t     current_fp;
+    int16_t     max_fp;
+    int16_t     coins;
+    int16_t     current_sp;
+    int16_t     max_sp;
+    char        _unk_0x07e[0x006];  // Unused?
+    float       audience_level;
+    int16_t     rank;
+    int16_t     level;
+    uint16_t    star_powers_obtained;  // Bitfield
+    int16_t     base_max_hp;
+    int16_t     base_max_fp;
+    char        _unk_0x092[0x542];  // Most of this is known but not needed
+} __attribute__((__packed__));
+
+static_assert(sizeof(PouchWork) == 0x5D4);
 
 // pouchGetYoshiName
 // pouchSetYoshiName
@@ -29,7 +50,7 @@ int32_t pouchEquipCheckBadge(int16_t badge_id);
 // pouchEquipBadgeIndex
 // pouchGetStarPoint
 // pouchRevisePartyParam
-// pouchReviseMarioParam
+void pouchReviseMarioParam();
 // pouchRemoveKeepItem
 // pouchAddKeepItem
 // pouchGetPartyAttackLv
@@ -41,16 +62,16 @@ int32_t pouchGetMaxAP();
 // pouchSetAP
 void pouchAddAP(int32_t star_power);
 int32_t pouchGetAP();
-// pouchSetMaxFP
-// pouchSetFP
-// pouchGetMaxFP
-// pouchGetFP
+void pouchSetMaxFP(int16_t max_fp);
+void pouchSetFP(int16_t fp);
+int16_t pouchGetMaxFP();
+int16_t pouchGetFP();
 // pouchSetPartyHP
 // pouchGetPartyHP
-// pouchSetMaxHP
-// pouchSetHP
-// pouchGetMaxHP
-// pouchGetHP
+void pouchSetMaxHP(int16_t max_hp);
+void pouchSetHP(int16_t hp);
+int16_t pouchGetMaxHP();
+int16_t pouchGetHP();
 // pouchAddHP
 // pouchAddStarPiece
 // pouchGetStarPiece
@@ -81,7 +102,7 @@ int32_t pouchGetAP();
 // pouchHaveItem
 // pouchKeyItem
 // pouchInit
-// pouchGetPtr
+PouchWork* pouchGetPtr();
 
 }
 

@@ -84,27 +84,35 @@ namespace ButtonId      = ::ttyd::common::ButtonId;
 namespace ItemId        = ::ttyd::common::ItemId;
 namespace ModuleId      = ::ttyd::common::ModuleId;
 
-// Bitfields for badges of which there should be one-or-more, and two-or-more
-// copies in the shuffle pool, offset by the first badge ID (POWER_JUMP).
-const uint32_t kOneCopyBadges[] = { 0xffffffffU, 0xffffffffU, 0x01ffefffU };
-const uint32_t kTwoCopyBadges[] = { 0x303ffb7fU, 0x787107ffU, 0x00300000U };
+// Number of badges of each type to include in the shuffle pool,
+// expressed in 2-bit form and offset by POWER_JUMP.
+// If a badge appears in a shop and would normally appear more than once,
+// in the pool, one copy will be removed from the pool.
+const uint32_t kBadgePoolCounts[] = {
+    0xaaaa6aaaU, 0x5a555aaaU, 0x556bfaaaU, 0x6a956a56U, 0x55555555U,
+    0x00015f55U, 0x00000028U
+};
 // Bitfield for items that can appear on the field, offset by THUNDER_BOLT.
 const uint32_t kFieldItems[]    = { 0xffffffffU, 0x0006001fU };
 // Bitfield for items, recipes, and stackable badges that can appear in shops,
 // offset by THUNDER_BOLT.  Gold Bar and Gold Bar x3 are not included.
-const uint32_t kShopGuaranteedItems[]     = { 
-    0xffffffffU, 0x0006001fU, 0x00000000U, 0x00000000U, 0x01400000U, 0x00000000U
+const uint32_t kShopGuaranteedItems[]     = {
+    0xffffffffU, 0x0006001fU, 0x00000000U, 0x00000000U, 0x01400000U,
+    0x00000000U, 0x00018000U
 };
 const uint32_t kShopFillerItems[]     = { 
-    0x00000000U, 0xfff80000U, 0xffffffffU, 0x3bff0fffU, 0x0ebfffffU, 0x078ffff7U
+    0x00000000U, 0xfff80000U, 0xffffffffU, 0x3fff0fffU, 0x0ebfffffU, 
+    0x078ffff7U, 0x00060000U
 };
 const uint32_t kShopAllItems[]     = { 
-    0xffffffffU, 0xfffe001fU, 0xffffffffU, 0x3bff0fffU, 0x0fffffffU, 0x078ffff7U
+    0xffffffffU, 0xfffe001fU, 0xffffffffU, 0x3fff0fffU, 0x0fffffffU, 
+    0x078ffff7U, 0x00078000U
 };
-// Rebalanced price tiers for badges (excluding L & W Emblems).
+// Rebalanced price tiers for badges.
 const uint32_t kBadgePriceTiers[] = {
-    0x32222633U, 0x66262224U, 0x77662244U, 0x55778888U, 0x33555555U, 0x44444773U,
-    0x32224581U, 0x63355553U, 0x41182216U, 0x11111564U, 0x04111411U
+    0x32222633U, 0x66262224U, 0x77662244U, 0x55778888U, 0x33555555U, 
+    0x44444773U, 0x32224581U, 0x63355553U, 0x41182216U, 0x11111564U,
+    0x04111411U, 0x10000000U, 0x00000221U
 };
 // Offset from the start of shops' modules to their shop info, following the
 // order of the ShopType enum.
@@ -123,7 +131,7 @@ const SavedFlagRow kSavedFlags[] = {
     { 0x0EA0, 0x040F }, { 0x1590, 0x8DC0 }, { 0x15A0, 0xF803 },
     { 0x15B0, 0x9EFF }, { 0x15D0, 0x1000 }, { 0x15F0, 0xFE00 },
     { 0x1600, 0xFFFF }, { 0x1610, 0x03F3 },
-    // Ultra Hammer disallowed.
+    // Ultra Hammer disallowed. (ends with Pit rewards)
     { 0x0540, 0x7400 }, { 0x0550, 0x007C }, { 0x05D0, 0xE000 },
     { 0x05E0, 0x0033 }, { 0x0650, 0x1000 }, { 0x06F0, 0xCF14 },
     { 0x0700, 0x477C }, { 0x09D0, 0x1180 }, { 0x09E0, 0x0020 },
@@ -131,10 +139,10 @@ const SavedFlagRow kSavedFlags[] = {
     { 0x0B20, 0x5020 }, { 0x0B30, 0x0620 }, { 0x0B40, 0x0020 },
     { 0x0F20, 0x8000 }, { 0x0F30, 0x0018 }, { 0x0FC0, 0x00F8 },
     { 0x1060, 0x0040 }, { 0x1070, 0x01D8 }, { 0x1110, 0x8FD8 },
-    { 0x1120, 0x07BF }, { 0x13D0, 0x1FF8 }, { 0x1590, 0x7220 },
-    { 0x15A0, 0x07FC }, { 0x15B0, 0x6000 }, { 0x15C0, 0xFFFF },
-    { 0x15D0, 0xEFFF }, { 0x15E0, 0xFFFF }, { 0x15F0, 0x01FF },
-    { 0x1610, 0xFC00 }, { 0x1620, 0x0007 }
+    { 0x1120, 0x07BF }, { 0x1590, 0x7220 }, { 0x15A0, 0x07FC },
+    { 0x15B0, 0x6000 }, { 0x15C0, 0xFFFF }, { 0x15D0, 0xEFFF },
+    { 0x15E0, 0xFFFF }, { 0x15F0, 0x01FF }, { 0x1610, 0xFC00 },
+    { 0x1620, 0x0007 }, { 0x13D0, 0x1FF8 }
 };
 // Pit of 100 Trials stat balancing parameters.
 const PitBalanceParameters kHpBalanceParams = {
@@ -190,7 +198,11 @@ const uintptr_t kBlooperCrash1HookAddress   = 0x8010f810;
 const uintptr_t kBlooperCrash2HookAddress   = 0x8010f888;
 
 // Miscellaneous constants.
-const int16_t kKoopaCurseIconId             = 390;
+const int16_t kHpPlusIconId             =   9;
+const int16_t kFpPlusIconId             =   5;
+const int16_t kSquareDiamondIconId      =  44;
+const int16_t kSquareDiamondPartnerId   =  87;
+const int16_t kKoopaCurseIconId         = 390;
 const int16_t kChapter3PeachIntermissionSeq = 173;
 
 void InitializeItemDataChanges() {
@@ -220,6 +232,28 @@ void InitializeItemDataChanges() {
     // Because, let's be honest.
     item_db[ItemId::TORNADO_JUMP].bp_cost = 1;
     
+    // New badges (Toughen Up, Toughen Up P, Mini-HP Plus, Mini-FP Plus).
+    item_db[ItemId::SUPER_CHARGE].bp_cost = 1;
+    item_db[ItemId::SUPER_CHARGE].icon_id = kSquareDiamondIconId;
+    item_db[ItemId::SUPER_CHARGE].item_name_msg = "in_toughen_up";
+    item_db[ItemId::SUPER_CHARGE].item_desc_msg = "msg_toughen_up";
+    item_db[ItemId::SUPER_CHARGE].item_desc_menu_msg = "msg_toughen_up";
+    item_db[ItemId::SUPER_CHARGE_P].bp_cost = 1;
+    item_db[ItemId::SUPER_CHARGE_P].icon_id = kSquareDiamondPartnerId;
+    item_db[ItemId::SUPER_CHARGE_P].item_name_msg = "in_toughen_up_p";
+    item_db[ItemId::SUPER_CHARGE_P].item_desc_msg = "msg_toughen_up";
+    item_db[ItemId::SUPER_CHARGE_P].item_desc_menu_msg = "msg_toughen_up_p";
+    item_db[ItemId::SQUARE_DIAMOND_BADGE].bp_cost = 1;
+    item_db[ItemId::SQUARE_DIAMOND_BADGE].icon_id = kHpPlusIconId;
+    item_db[ItemId::SQUARE_DIAMOND_BADGE].item_name_msg = "in_mini_hp_up";
+    item_db[ItemId::SQUARE_DIAMOND_BADGE].item_desc_msg = "msg_mini_hp_up";
+    item_db[ItemId::SQUARE_DIAMOND_BADGE].item_desc_menu_msg = "msg_mini_hp_up";
+    item_db[ItemId::SQUARE_DIAMOND_BADGE_P].bp_cost = 1;
+    item_db[ItemId::SQUARE_DIAMOND_BADGE_P].icon_id = kFpPlusIconId;
+    item_db[ItemId::SQUARE_DIAMOND_BADGE_P].item_name_msg = "in_mini_fp_up";
+    item_db[ItemId::SQUARE_DIAMOND_BADGE_P].item_desc_msg = "msg_mini_fp_up";
+    item_db[ItemId::SQUARE_DIAMOND_BADGE_P].item_desc_menu_msg = "msg_mini_fp_up";
+    
     // Set coin buy / discount / sell prices for badges to rebalanced values,
     // badge Star Piece costs on BP cost, recipe prices based on sell price,
     // and fix unused items' and badges' sort order.
@@ -234,40 +268,42 @@ void InitializeItemDataChanges() {
                 item.type_sort_order += 1;
             }
         } else if (i >= ItemId::POWER_JUMP) {
-            item.star_piece_price = item.bp_cost + 1;
-            
-            if (i < ItemId::L_EMBLEM) {
-                const int32_t word_index = (i - ItemId::POWER_JUMP) >> 3;
-                const int32_t nybble_index = (i - ItemId::POWER_JUMP) & 7;
-                const int32_t tier = 
-                    (kBadgePriceTiers[word_index] >> (nybble_index << 2)) & 15;
-                if (tier > 0) {
-                    item.buy_price = tier > 4 ? tier * 50 - 100 : tier * 25;
-                }
+            const int32_t word_index = (i - ItemId::POWER_JUMP) >> 3;
+            const int32_t nybble_index = (i - ItemId::POWER_JUMP) & 7;
+            const int32_t tier = 
+                (kBadgePriceTiers[word_index] >> (nybble_index << 2)) & 15;
+            if (tier > 0) {
+                item.buy_price = tier > 4 ? tier * 50 - 100 : tier * 25;
             }
+            item.star_piece_price = tier > 0 ? tier : 1;
+            
             // higher discounted price, since most prices in general are lower
             item.discount_price = item.buy_price * 4 / 5;
             item.sell_price = item.buy_price >> 1;
             
-            if (item.type_sort_order > 0x49) {
-                item.type_sort_order += 4;
-            } else if (item.type_sort_order > 0x43) {
-                item.type_sort_order += 3;
-            } else if (item.type_sort_order > 0x3b) {
-                item.type_sort_order += 2;
-            } else if (item.type_sort_order > 0x24) {
-                item.type_sort_order += 1;
-            }
+            if (item.type_sort_order > 0x49) ++item.type_sort_order;
+            if (item.type_sort_order > 0x43) ++item.type_sort_order;
+            if (item.type_sort_order > 0x3b) ++item.type_sort_order;
+            if (item.type_sort_order > 0x24) ++item.type_sort_order;
+            if (item.type_sort_order > 0x21) ++item.type_sort_order;
+            if (item.type_sort_order > 0x1f) ++item.type_sort_order;
+            if (item.type_sort_order > 0x16) item.type_sort_order += 2;
         }
     }
     
-    // Fixed sort order for Koopa Curse and unused 'P' badges.
+    // Fixed sort order for Koopa Curse, new badges, and unused 'P' badges.
     item_db[ItemId::KOOPA_CURSE].type_sort_order        = 0x31 + 1;
     
-    item_db[ItemId::ALL_OR_NOTHING_P].type_sort_order   = 0x24 + 1;
-    item_db[ItemId::LUCKY_DAY_P].type_sort_order        = 0x3b + 2;
-    item_db[ItemId::PITY_FLOWER_P].type_sort_order      = 0x43 + 3;
-    item_db[ItemId::FP_DRAIN_P].type_sort_order         = 0x49 + 4;
+    item_db[ItemId::SUPER_CHARGE].type_sort_order       = 0x16 + 1;
+    item_db[ItemId::SUPER_CHARGE_P].type_sort_order     = 0x16 + 2;
+    item_db[ItemId::SQUARE_DIAMOND_BADGE].type_sort_order = 0x1f + 3;
+    item_db[ItemId::SQUARE_DIAMOND_BADGE_P].type_sort_order = 0x21 + 4;
+    
+    item_db[ItemId::ALL_OR_NOTHING_P].type_sort_order   = 0x24 + 5;
+    item_db[ItemId::LUCKY_DAY_P].type_sort_order        = 0x3b + 6;
+    item_db[ItemId::PITY_FLOWER_P].type_sort_order      = 0x43 + 7;
+    item_db[ItemId::FP_DRAIN_P].type_sort_order         = 0x49 + 8;
+    
 }
 
 void FillItemPriceInfo(ItemPrice* item_price, int16_t item_id, bool is_sell) {
@@ -325,6 +361,8 @@ void* (*g_itemEntry_trampoline)(
 int32_t (*g_mobj_powerupblk_trampoline)(void*) = nullptr;
 int32_t (*g_mobj_itembox_trampoline)(void*) = nullptr;
 void (*g_mobjRunEvent_trampoline)(void*, void*) = nullptr;
+void (*g__getSickStatusParam_trampoline)(
+    BattleUnitInstance*, AttackParams*, int32_t, int8_t*, int8_t*) = nullptr;
 int32_t (*g_BattleCalculateDamage_trampoline)(
     void*, void*, void*, AttackParams*, void*, uint32_t) = nullptr;
 int32_t (*g_BattleCalculateFpDamage_trampoline)(
@@ -334,8 +372,10 @@ void* (*g_BtlUnit_Entry_trampoline)(
 const char* (*g_msgSearch_trampoline)(const char*) = nullptr;
 void (*g_seqSetSeq_trampoline)(SeqIndex, const char*, const char*) = nullptr;
 int32_t (*g_pouchEquipCheckBadge_trampoline)(int16_t) = nullptr;
+void (*g_pouchReviseMarioParam_trampoline)() = nullptr;
 int32_t (*g_BtlUnit_GetWeaponCost_trampoline)(
     BattleUnitInstance*, AttackParams*) = nullptr;
+void (*g_BtlUnit_ReviseHpFp_trampoline)(BattleUnitInstance*) = nullptr;
 void (*g_DrawWeaponWin_trampoline)() = nullptr;
 int32_t (*g_BattleActionCommandCheckDefence_trampoline)(
     BattleUnitInstance*, AttackParams*) = nullptr;
@@ -370,112 +410,29 @@ void Shufflizer::InitializeShuffleSeed() {
     // 2. Change necessary buy/sell prices, etc. in the ItemData table.
     InitializeItemDataChanges();
     
-    // 3. Initialize the shuffled one-time item pool.
-    // Items are distributed as follows:
-    // - 27 Howz badges, 15 Dazzle badges, 16 Charlieton items,
-    //   286 field items (103 of which are eligible for Ultra Hammer).
-    // - 133 badges, 143 items, 25 coins, 41 Shines, Strange Sack, Ultra Hammer.
-    //   (Some of the items are replaced by Star Pieces, per Dazzle's badges.)
-    int16_t items[344];
-    int16_t *pos, *items_end, *badges_end, *shines_end;
-    int32_t* assign_pos;
+    // 3. Put together list of possible shop items.
+    // - 39 normal, 57 recipes, 69 stackable badge types.
+    int16_t shop_items[165];
+    int16_t *pos;
+    int32_t *assign_pos;
     
-    // Add all badges with one+ and two+ copies.
     pos = CreateItemArrayFromBitfield(
-        kOneCopyBadges, kOneCopyBadges + 3, items, ItemId::POWER_JUMP);
-    pos = CreateItemArrayFromBitfield(
-        kTwoCopyBadges, kTwoCopyBadges + 3, pos, ItemId::POWER_JUMP);
-    // Add third copies of these badges, since that's their maximum effect.
-    *pos++ = ItemId::SIMPLIFIER;
-    *pos++ = ItemId::UNSIMPLIFIER;
-    badges_end = pos;
-    
-    *pos++ = ItemId::STRANGE_SACK;
-    
-    // 39 items x4 copies, set the ptr back 13 spots for a total of 143.
-    for (int32_t i = 0; i < 4; ++i) {
-        pos = CreateItemArrayFromBitfield(
-            kFieldItems, kFieldItems + 2, pos, ItemId::THUNDER_BOLT);
-    }
-    pos -= 13;
-    items_end = pos;
-    
-    for (int32_t i = 0; i < 25; ++i) {
-        *pos++ = ItemId::COIN;
-    }
-    for (int32_t i = 0; i < 41; ++i) {
-        *pos++ = ItemId::SHINE_SPRITE;
-    }
-    shines_end = pos;
-    // One empty space left at end for the Ultra Hammer.
-    
-    // 4. Shuffle badges, and assign Howz and Dazzle's badge stock.
-    ShuffleRange(items, badges_end);
-    
-    assign_pos = common::kHowzItemArr;
-    pos = items;
-    for (int32_t i = 0; i < 27; ++i) {
-        // Leave breaks after each chapter's group of badges.
-        if (i > 6 && !(i % 3)) ++assign_pos;
-        *assign_pos++ = *pos++;
-    }
-    
-    assign_pos = common::kDazzleItemArr;
-    // Keep track of how many Star Pieces we need (-2 for Excess NPC gifts).
-    int32_t star_pieces = -2;
-    for (int32_t i = 0; i < 15; ++i) {
-        int16_t item_id = *pos++;
-        *assign_pos++ = item_id;
-        star_pieces += common::kItemDataArr[item_id].star_piece_price;
-    }
-    
-    // 5. Replace the last X-2 items with Star Pieces.
-    for (int32_t i = 0; i < star_pieces; ++i) {
-        *--items_end = ItemId::STAR_PIECE;
-    }
-    
-    // 6. Perform shuffles to uniformly distribute valid items to Charlieton,
-    // and UH-allowed / disallowed field item slots.
-    
-    // Shuffle remaining badges, items, and the Strange Sack.
-    ShuffleRange(pos, items_end);
-    // Shuffle all but the first 16 of these, and everything else except the UH.
-    ShuffleRange(pos + 16, shines_end);
-    // Swap the Ultra Hammer with a random Charlieton or UH-allowed field item.
-    int16_t* swap_pos = pos + ShufflizerRand(16 + 103);
-    *shines_end = *swap_pos;
-    *swap_pos = ItemId::ULTRA_HAMMER;
-    
-    // 7. Assign Rogueport Charlieton's stock of items.
-    assign_pos = common::kCharlietonItemArr;
-    for (int32_t i = 0; i < 16; ++i) {
-        *assign_pos++ = *pos++;
-    }
-    
-    // 8. Copy remaining items to the field item seed state.
-    ttyd::system::memcpy_as4(seed_state_.field_items, pos, 286 * sizeof(int16_t));
-    
-    // 9. Put together list of possible shop items.
-    // - 39 normal, 57 recipes, 64 stackable badge types.
-    int16_t shop_items[160];
-    pos = CreateItemArrayFromBitfield(
-        kShopGuaranteedItems, kShopGuaranteedItems + 6, shop_items, 
+        kShopGuaranteedItems, kShopGuaranteedItems + 7, shop_items, 
         ItemId::THUNDER_BOLT);
     CreateItemArrayFromBitfield(
-        kShopFillerItems, kShopFillerItems + 6, pos, 
-        ItemId::THUNDER_BOLT);
+        kShopFillerItems, kShopFillerItems + 7, pos, ItemId::THUNDER_BOLT);
     // Dried Shroom and Dizzy Dial are not randomized, but Gold Bars should be
     // included in the normal shops.
     shop_items[ItemId::DRIED_SHROOM - ItemId::THUNDER_BOLT] = ItemId::GOLD_BAR;
     shop_items[ItemId::DIZZY_DIAL - ItemId::THUNDER_BOLT] = ItemId::GOLD_BAR_X3;
     
-    // 10. Shuffle filler items (all but normal items + HP/FP Plus),
+    // 4. Shuffle filler items (all but normal items + HP/FP Pluses),
     // then shuffle first 77 items.
     // (60 shop + 20 Pianta slots - Dried Shroom, Dizzy Dial, and Cake Mix)
-    ShuffleRange(pos, shop_items + 160);
+    ShuffleRange(pos, shop_items + 165);
     ShuffleRange(shop_items, shop_items + 77);
     
-    // 11. Fill out normal shop item data.
+    // 5. Fill out normal shop item data.
     pos = shop_items;
     for (int32_t i = 0; i < 60; ++i) {
         // Slot Dried Shroom and Dizzy Dial in the expected places.
@@ -504,7 +461,7 @@ void Shufflizer::InitializeShuffleSeed() {
             /* is_sell = */ true);
     }
     
-    // 12. Fill out Pianta Parlor tables.
+    // 6. Fill out Pianta Parlor tables.
     assign_pos = common::kPiantaParlorItemArr;
     // Hardcode Cake Mix to first slot.
     *assign_pos++ = ItemId::CAKE_MIX;
@@ -513,6 +470,117 @@ void Shufflizer::InitializeShuffleSeed() {
         if (!(i & 3)) ++assign_pos;
         *assign_pos++ = *pos++;
     }
+    
+    // 7. Initialize the shuffled one-time item pool.
+    // Items are distributed as follows:
+    // - 27 Howz badges, 15 Dazzle badges, 16 Charlieton items,
+    //   286 field items (103 of which are eligible for Ultra Hammer).
+    // - Includes up to 138 badges, some items / Star Pieces, 20 coins,
+    //   41 Shine Sprites, the Strange Sack and the Ultra Hammer.
+    //   (The exact counts of badges / items / Star Pieces depend on the
+    //    item shops' badges and the Star Piece cost of Dazzle's badges.)
+    int16_t items[344 + 10];  // The last 10 are padding for moving Pit rewards.
+    int16_t *badges_end, *items_end, *shines_end;
+    
+    uint32_t badge_pool_counts[7];
+    ttyd::system::memcpy_as4(
+        badge_pool_counts, kBadgePoolCounts, 7 * sizeof(uint32_t));
+    
+    // Remove a copy of all badges included in the standard item shops or Parlor
+    // that would otherwise have more than one copy.
+    for (int32_t i = 0; i < 77; ++i) {
+        int16_t item_id = shop_items[i];
+        if (item_id >= ItemId::POWER_JUMP) {
+            uint32_t word_index = (item_id - ItemId::POWER_JUMP) >> 4;
+            uint32_t bits_index = (item_id - ItemId::POWER_JUMP) & 15;
+            int32_t count =
+                (badge_pool_counts[word_index] >> (bits_index << 1)) & 3;
+            if (count > 1) {
+                badge_pool_counts[word_index] -= 1 << (bits_index << 1);
+            }
+        }
+    }
+    // Initialize remaining badge pool.
+    pos = CreateItemArrayFromBitfield(
+        badge_pool_counts, badge_pool_counts + 7, items, ItemId::POWER_JUMP, 
+        /* bits_per_item = */ 2);
+    badges_end = pos;
+    
+    *pos++ = ItemId::STRANGE_SACK;
+    
+    // Fill forward with the 39 field-spawnable items x5 copies; some will be
+    // overwritten later, but this is enough to guarantee there will be
+    // enough given the lowest possible number of badges / Star Pieces, but not 
+    // enough to write past the end of the item buffer.
+    for (int32_t i = 0; i < 5; ++i) {
+        pos = CreateItemArrayFromBitfield(
+            kFieldItems, kFieldItems + 2, pos, ItemId::THUNDER_BOLT);
+    }
+    
+    // Fill Shines and coins backwards from the next-to-last slot;
+    // the last slot is saved for the Ultra Hammer.
+    pos = items + 343;
+    shines_end = pos;
+    for (int32_t i = 0; i < 41; ++i) {
+        *--pos = ItemId::SHINE_SPRITE;
+    }
+    for (int32_t i = 0; i < 20; ++i) {
+        *--pos = ItemId::COIN;
+    }
+    items_end = pos;
+    
+    // 8. Shuffle badges, and assign Howz and Dazzle's badge stock.
+    ShuffleRange(items, badges_end);
+    
+    assign_pos = common::kHowzItemArr;
+    pos = items;
+    for (int32_t i = 0; i < 27; ++i) {
+        // Leave breaks after each chapter's group of badges.
+        if (i > 6 && !(i % 3)) ++assign_pos;
+        *assign_pos++ = *pos++;
+    }
+    
+    assign_pos = common::kDazzleItemArr;
+    // Keep track of how many Star Pieces we need (-2 for Excess NPC gifts).
+    int32_t star_pieces = -2;
+    for (int32_t i = 0; i < 15; ++i) {
+        int16_t item_id = *pos++;
+        *assign_pos++ = item_id;
+        star_pieces += common::kItemDataArr[item_id].star_piece_price;
+    }
+    
+    // Replace the last X-2 items with Star Pieces.
+    for (int32_t i = 0; i < star_pieces; ++i) {
+        *--items_end = ItemId::STAR_PIECE;
+    }
+    
+    // 9. Shuffle the remaining badges and Strange Sack for Pit rewards;
+    // these will be moved to the correct location later.
+    ShuffleRange(pos, badges_end + 1);
+    pos += 10;
+    
+    // 10. Perform shuffles to uniformly distribute valid items to Charlieton,
+    // and UH-allowed / disallowed field item slots.
+    
+    // Shuffle remaining badges / Strange Sack and items.
+    ShuffleRange(pos, items_end);
+    // Shuffle all but the first 16 of these, and everything else except the UH.
+    ShuffleRange(pos + 16, shines_end);
+    // Swap the Ultra Hammer with a random Charlieton or UH-allowed field item.
+    int16_t* swap_pos = pos + ShufflizerRand(16 + 103);
+    *shines_end = *swap_pos;
+    *swap_pos = ItemId::ULTRA_HAMMER;
+    
+    // 11. Assign Rogueport Charlieton's stock of items.
+    assign_pos = common::kCharlietonItemArr;
+    for (int32_t i = 0; i < 16; ++i) {
+        *assign_pos++ = *pos++;
+    }
+    
+    // 12. Copy the slots with the Pit rewards chosen earlier to the end,
+    // then copy remaining items to the field item seed state.
+    ttyd::system::memcpy_as4(items + 344, items + 42, 10 * sizeof(int16_t));
+    ttyd::system::memcpy_as4(seed_state_.field_items, pos, 286 * sizeof(int16_t));
     
     // 13. Set up shuffled Pit floors (include the 10's in their normal places).
     int8_t pit_floors[90];
@@ -529,7 +597,7 @@ void Shufflizer::InitializeShuffleSeed() {
     }
     
     // 14. Set up Charlieton Pit items (uses the same pool as item shops).
-    ShuffleRange(shop_items, shop_items + 160);
+    ShuffleRange(shop_items, shop_items + 165);
     ttyd::system::memcpy_as4(
         seed_state_.charlieton_pit_items, shop_items, 54 * sizeof(int16_t));
         
@@ -550,7 +618,7 @@ void Shufflizer::InitializeShuffleSeed() {
         seed_state_.special_field_items, shop_items, 12 * sizeof(int16_t));
         
     // 16. Save the final id of the Ultra Hammer flag for convenience.
-    // TODO: Add a specific sentinel if it ended up in Charlieton's shop.
+    // (If it ended up in Charlieton's shop, the index remains -1.)
     int32_t ultra_hammer_index = -1;
     for (int32_t i = 0; i < 286; ++i) {
         if (seed_state_.field_items[i] == ItemId::ULTRA_HAMMER) {
@@ -584,7 +652,7 @@ void Shufflizer::OnModuleLoaded(ttyd::oslink::OSModuleInfo* module_info) {
             // Assign Charlieton a set of six random items.
             for (int32_t i = 0; i < 6; ++i) {
                 *item_pos++ = GetRandomItemFromBitfield(
-                    kShopAllItems, kShopAllItems + 6, ItemId::THUNDER_BOLT);
+                    kShopAllItems, kShopAllItems + 7, ItemId::THUNDER_BOLT);
             }
         }
         
@@ -1116,7 +1184,8 @@ void Shufflizer::Init() {
     // Patch in fixed text for Trade Off, Cake, and Koopa Curse, etc.
     g_msgSearch_trampoline = patch::HookFunction(
         ttyd::msgdrv::msgSearch, [](const char* msg_key) {
-            const char* replacement = GetReplacementMessage(msg_key);
+            const char* replacement = 
+                GetReplacementMessage(msg_key, gSelf->seed_state_);
             if (replacement) return replacement;
             return g_msgSearch_trampoline(msg_key);
         });
@@ -1181,6 +1250,20 @@ void Shufflizer::Init() {
                     int32_t fp_cost = base_cost * cur_count -
                         battle_unit->badges_equipped.flower_saver;
                     return fp_cost < 1 ? 1 : fp_cost;
+                } else if (attack_params && gInBattle &&
+                           attack_params->item_id == ItemId::PIERCING_BLOW) {
+                    // Even without user-selected levels, change Piercing Blow
+                    // to use standard exponential stacking.
+                    int32_t fp_cost = 1;
+                    const int32_t num_piercing_blows =
+                        ttyd::mario_pouch::pouchEquipCheckBadge(
+                            ItemId::PIERCING_BLOW);
+                    for (int32_t i = 0; i < num_piercing_blows; ++i) {
+                        fp_cost <<= 1;
+                    }
+                    fp_cost = fp_cost -
+                        battle_unit->badges_equipped.flower_saver;
+                    return fp_cost < 1 ? 1 : fp_cost;
                 }
                 return g_BtlUnit_GetWeaponCost_trampoline(
                     battle_unit, attack_params);
@@ -1243,6 +1326,84 @@ void Shufflizer::Init() {
             ttyd::icondrv::iconNumberDispGx(
                 matrix, current_AP, 1 /* is_small */, &unknown_param);
         });
+        
+    // NEW 2.0 PATCH BADGES:
+    // Patch _getSickStatusParam so "Toughen Up" gets the correct strength.
+    g__getSickStatusParam_trampoline = patch::HookFunction(
+        ttyd::battle_damage::_getSickStatusParam, [](
+            BattleUnitInstance* battle_unit, AttackParams* attack_params,
+            int32_t status_type, int8_t* turn_count, int8_t* strength) {
+            // Run vanilla logic.
+            g__getSickStatusParam_trampoline(
+                battle_unit, attack_params, status_type, turn_count, strength);
+              
+            // If badge type and status type (DEF-Up) are correct, 
+            // change the effect strength based on the number of badges equipped.
+            if (status_type == 14 && (
+                attack_params->item_id == ItemId::SUPER_CHARGE ||
+                attack_params->item_id == ItemId::SUPER_CHARGE_P)) {
+                bool is_mario = battle_unit->type_id == ActorTypeId::MARIO;
+                int8_t badges = ttyd::mario_pouch::pouchEquipCheckBadge(
+                    is_mario ? ItemId::SUPER_CHARGE : ItemId::SUPER_CHARGE_P);
+                *strength = badges + 1;
+            }
+        });
+    // Patch pouch HP/FP revision to account for Mini Plus badges.
+    g_pouchReviseMarioParam_trampoline = patch::HookFunction(
+        ttyd::mario_pouch::pouchReviseMarioParam, []() {
+            // Save pre-revised HP and FP values.
+            const int16_t previous_hp = ttyd::mario_pouch::pouchGetHP();
+            const int16_t previous_fp = ttyd::mario_pouch::pouchGetFP();
+            
+            // Run vanilla logic.
+            g_pouchReviseMarioParam_trampoline();
+            
+            // Alter HP and FP values as required.
+            const int8_t new_max_hp =
+                ttyd::mario_pouch::pouchGetPtr()->max_hp +
+                ttyd::mario_pouch::pouchEquipCheckBadge(
+                    ItemId::SQUARE_DIAMOND_BADGE);
+            const int8_t new_max_fp =
+                ttyd::mario_pouch::pouchGetPtr()->max_fp +
+                ttyd::mario_pouch::pouchEquipCheckBadge(
+                    ItemId::SQUARE_DIAMOND_BADGE_P);
+            ttyd::mario_pouch::pouchGetPtr()->max_hp = new_max_hp;
+            ttyd::mario_pouch::pouchGetPtr()->max_fp = new_max_fp;
+            ttyd::mario_pouch::pouchSetHP(
+                previous_hp < new_max_hp ? previous_hp : new_max_hp);
+            ttyd::mario_pouch::pouchSetFP(
+                previous_fp < new_max_fp ? previous_fp : new_max_fp);
+        });
+    // Patch in-battle HP/FP revision to account for Mini Plus badges.
+    g_BtlUnit_ReviseHpFp_trampoline = patch::HookFunction(
+        ttyd::battle_unit::BtlUnit_ReviseHpFp, [](
+            BattleUnitInstance* battle_unit) {
+            // Save pre-revised HP and FP values.
+            const int16_t previous_hp = battle_unit->current_hp;
+            const int16_t previous_fp = battle_unit->current_fp;
+            
+            // Run vanilla logic.
+            g_BtlUnit_ReviseHpFp_trampoline(battle_unit);
+            
+            // Alter HP and FP values as required.
+            // (Still interacts weirdly w/Badge Bandits, largely not my fault.)
+            if (battle_unit->type_id == ActorTypeId::MARIO) {
+                const int8_t new_max_hp =
+                    battle_unit->max_hp +
+                    ttyd::mario_pouch::pouchEquipCheckBadge(
+                        ItemId::SQUARE_DIAMOND_BADGE);
+                battle_unit->max_hp = new_max_hp;
+                battle_unit->current_hp =
+                    previous_hp < new_max_hp ? previous_hp : new_max_hp;
+            }
+            const int8_t new_max_fp =
+                battle_unit->max_fp +
+                ttyd::mario_pouch::pouchEquipCheckBadge(
+                    ItemId::SQUARE_DIAMOND_BADGE_P);
+            battle_unit->max_fp = new_max_fp;
+            battle_unit->current_fp =
+                previous_fp < new_max_fp ? previous_fp : new_max_fp;
+        });
     
     // MISC. PATCHES:
     
@@ -1290,6 +1451,29 @@ void Shufflizer::Init() {
     
     // Change Koopa Curse to affect all enemies.
     common::kKoopaCurseParams->num_targets = 2;
+    
+    // Change Piercing Blow to have Hammer Throw's damage scaling when stacked.
+    ttyd::system::memcpy_as4(
+        &common::kPiercingBlowParams->base_damage_fn,
+        &common::kHammerThrowParams->base_damage_fn, 9 * sizeof(int32_t));
+    // In this case, determines which equipped badges to count / power to add.
+    common::kPiercingBlowParams->_unk_0x38 = ItemId::PIERCING_BLOW;
+    
+    // Change Super Charge (P) to have a single-turn defense buff instead.
+    common::kSuperChargeParams->base_fp_cost = 1;
+    common::kSuperChargeParams->charge_strength = 0;
+    common::kSuperChargeParams->def_change_chance = 100;
+    common::kSuperChargeParams->def_change_time = 1;
+    common::kSuperChargeParams->def_change_strength = 2;
+    common::kSuperChargeParams->icon_id = kSquareDiamondIconId;
+    common::kSuperChargeParams->name_msg = "in_toughen_up";
+    common::kSuperChargePartnerParams->base_fp_cost = 1;
+    common::kSuperChargePartnerParams->charge_strength = 0;
+    common::kSuperChargePartnerParams->def_change_chance = 100;
+    common::kSuperChargePartnerParams->def_change_time = 1;
+    common::kSuperChargePartnerParams->def_change_strength = 2;
+    common::kSuperChargePartnerParams->icon_id = kSquareDiamondIconId;
+    common::kSuperChargePartnerParams->name_msg = "in_toughen_up";
     
     // Enable crash handler printout.
     const uint32_t enable_handler_opcode = 0x3800FFFF;  // li r0, -1
