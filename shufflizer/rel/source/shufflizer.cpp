@@ -136,7 +136,7 @@ const SavedFlagRow kSavedFlags[] = {
     { 0x05E0, 0x0033 }, { 0x0650, 0x1000 }, { 0x06F0, 0xCF14 },
     { 0x0700, 0x477C }, { 0x09D0, 0x1180 }, { 0x09E0, 0x0020 },
     { 0x0A70, 0xF8B0 }, { 0x0B00, 0x1200 }, { 0x0B10, 0x3060 },
-    { 0x0B20, 0x5020 }, { 0x0B30, 0x0620 }, { 0x0B40, 0x0020 },
+    { 0x0B20, 0x5020 }, { 0x0B30, 0x0A20 }, { 0x0B40, 0x0020 },
     { 0x0F20, 0x8000 }, { 0x0F30, 0x0018 }, { 0x0FC0, 0x00F8 },
     { 0x1060, 0x0040 }, { 0x1070, 0x01D8 }, { 0x1110, 0x8FD8 },
     { 0x1120, 0x07BF }, { 0x1590, 0x7220 }, { 0x15A0, 0x07FC },
@@ -1439,7 +1439,7 @@ void Shufflizer::Init() {
     // Change Trade Off to have a 100% chance of inflicting +3 ATK for 9 turns.
     common::kTradeOffParams->atk_change_chance      = 100;
     common::kTradeOffParams->atk_change_time        = 9;
-    common::kTradeOffParams->atk_chance_strength    = 3;
+    common::kTradeOffParams->atk_change_strength    = 3;
     
     // Patch Trade Off's script code to inflict the newly added +ATK status.
     uint32_t script_opcodes[] = {

@@ -724,7 +724,7 @@ struct AttackParams {
     int8_t          atk_change_chance;
     int8_t          atk_change_time;
     
-    int8_t          atk_chance_strength;
+    int8_t          atk_change_strength;
     int8_t          def_change_chance;
     int8_t          def_change_time;
     int8_t          def_change_strength;

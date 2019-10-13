@@ -301,7 +301,7 @@ void ShufflizerMenu::Draw() {
     if (OnTitleScreen()) {
         uint8_t title_window_color[4] = { 0, 0, 0, 0xCC };
         DrawWindow(title_window_color, -225, -16, 450, 70, 10);
-        DrawString("   Shufflizer v2.00 by jdaster64", -175, -30, -1U, 0.75);
+        DrawString("   Shufflizer v2.01 by jdaster64", -175, -30, -1U, 0.75);
         DrawString("Install guide: https://goo.gl/VhiqZH", -175, -53, -1U, 0.75);
     } else if (!InMainGameModes()) {
         return;
