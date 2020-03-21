@@ -1,6 +1,6 @@
 #include "shufflizer_menu.h"
 
-#include <cstdint>
+#include <cinttypes>
 #include <cstdio>
 #include <ttyd/common_types.h>
 #include <ttyd/fontmgr.h>
@@ -324,17 +324,17 @@ void ShufflizerMenu::Draw() {
     if (menu_page_ == 1) {
         color = (menu_state_ == MenuState::HP_MODIFIER 
                  ? -0xFFFFU : -0xFFU) | alpha;
-        sprintf(buf, "HP modifier: %ld%s", options_->enemy_hp_modifier, "%");
+        sprintf(buf, "HP modifier: %" PRId32 "%s", options_->enemy_hp_modifier, "%");
         DrawString(buf, -205, -73, color, 0.75);
         
         color = (menu_state_ == MenuState::ATK_MODIFIER
                  ? -0xFFFFU : -0xFFU) | alpha;
-        sprintf(buf, "ATK modifier: %ld%s", options_->enemy_atk_modifier, "%");
+        sprintf(buf, "ATK modifier: %" PRId32 "%s", options_->enemy_atk_modifier, "%");
         DrawString(buf, -205, -92, color, 0.75);
         
         color = (menu_state_ == MenuState::DEF_MODIFIER
                  ? -0xFFFFU : -0xFFU) | alpha;
-        sprintf(buf, "DEF modifier: +%ld", options_->enemy_def_modifier);
+        sprintf(buf, "DEF modifier: +%" PRId32, options_->enemy_def_modifier);
         DrawString(buf, -205, -111, color, 0.75);
         
         color = (menu_state_ == MenuState::SUPERGUARD_COST 
@@ -369,7 +369,7 @@ void ShufflizerMenu::Draw() {
     }
     
     color = (menu_state_ == MenuState::CHANGE_PAGE ? -0xFFFFU : -0xFFU) | alpha;
-    sprintf(buf, "Next Page (%ld of 2)", menu_page_);
+    sprintf(buf, "Next Page (%" PRId32 " of 2)", menu_page_);
     DrawString(buf, -205, -149, color, 0.75);
 }
 
