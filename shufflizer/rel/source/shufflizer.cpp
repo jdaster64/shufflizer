@@ -1,6 +1,6 @@
 #include "shufflizer.h"
 
-#include <cstdint>
+#include <cinttypes>
 #include <cstdio>
 #include <ttyd/battle_ac.h>
 #include <ttyd/battle_damage.h>
@@ -1072,7 +1072,7 @@ void Shufflizer::HandleMovePowerLevelSelection() {
         }
         
         // Overwrite default text based on current power level for all options.
-        sprintf(gMoveBadgeTextBuffers[badge_move_idx], "%s Lv. %d (L/R)",
+        sprintf(gMoveBadgeTextBuffers[badge_move_idx], "%s Lv. %" PRId8 " (L/R)",
                 kMoveBadgeAbbreviations[badge_move_idx],
                 gCurMoveBadgeCounts[badge_move_idx]);
         wwi.menu_text = gMoveBadgeTextBuffers[badge_move_idx];
