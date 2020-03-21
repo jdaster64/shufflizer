@@ -334,7 +334,7 @@ void ShufflizerMenu::Draw() {
         
         color = (menu_state_ == MenuState::DEF_MODIFIER
                  ? -0xFFFFU : -0xFFU) | alpha;
-        sprintf(buf, "DEF modifier: +%" PRId32 "", options_->enemy_def_modifier);
+        sprintf(buf, "DEF modifier: +%" PRId32, options_->enemy_def_modifier);
         DrawString(buf, -205, -111, color, 0.75);
         
         color = (menu_state_ == MenuState::SUPERGUARD_COST 
