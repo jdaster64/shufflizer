@@ -325,7 +325,7 @@ const char* GetReplacementMessage(const char* msg_key, const SeedState& state) {
     } else if (!ttyd::string::strcmp(msg_key, "stg1_hei_q_02")) {
         return GetThwompQuizOptions(state, buf);
     } else if (!ttyd::string::strcmp(msg_key, "mac_6_013") ||
-               !ttyd::string::strcmp(msg_key, "gor_02_027")) {
+               !ttyd::string::strcmp(msg_key, "gor_02_026_01")) {
         if (common::HasKeyItemInInventory(ItemId::ULTRA_HAMMER)) return nullptr;
         
         // Change the text describing the location of the Ultra Hammer
