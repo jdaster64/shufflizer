@@ -20,6 +20,7 @@
 #include <ttyd/OSCache.h>
 #include <ttyd/OSLink.h>
 #include <ttyd/seqdrv.h>
+#include <ttyd/seq_mapchange.h>
 #include <ttyd/sound.h>
 #include <ttyd/statuswindow.h>
 #include <ttyd/string.h>
@@ -356,6 +357,7 @@ Shufflizer* gSelf = nullptr;
 void (*g_stg0_00_init_trampoline)() = nullptr;
 void (*g_cardCopy2Main_trampoline)(uint32_t) = nullptr;
 bool (*g_OSLink_trampoline)(OSModuleInfo*, void*) = nullptr;
+void (*g_seq_mapChangeMain_trampoline)(void*) = nullptr;
 void* (*g_itemEntry_trampoline)(
     const char*, uint32_t, uint32_t, int32_t, void*, float, float, float) = nullptr;
 int32_t (*g_mobj_powerupblk_trampoline)(void*) = nullptr;
@@ -671,6 +673,18 @@ void Shufflizer::OnModuleLoaded(ttyd::oslink::OSModuleInfo* module_info) {
         }
     }
     
+    // Remove code that automatically saves badges gotten from the Atomic Boo
+    // fight to the badge shop, in favor of adding an event that spawns it on
+    // the floor if you don't pick it up initially, and re-enter the room later.
+    if (module_id == ModuleId::JIN) {
+        // Disable the flag that makes the item go to the badge shop if left.
+        *reinterpret_cast<int32_t*>(
+            module_ptr + common::kJinModuleAtomicBooItemObjectFlagOffset) = 0;
+        // Don't automatically set the GSWF for having picked up the item.
+        *reinterpret_cast<int32_t*>(
+            module_ptr + common::kJinModuleAtomicBooItemGswfSetOffset) = 0;
+    }
+    
     // If shuffling misc. items is allowed and module loaded is Keelhaul Key,
     // replace Flavio's desired item with its shuffled replacement.
     if (options_.shuffle_misc_items && module_id == ModuleId::MUJ) {
@@ -797,6 +811,19 @@ void Shufflizer::OnModuleLoaded(ttyd::oslink::OSModuleInfo* module_info) {
         item_db[ItemId::ULTRA_HAMMER].buy_price = 834;
     } else {
         item_db[ItemId::ULTRA_HAMMER].buy_price = 250;
+    }
+}
+
+void Shufflizer::AfterRoomInitEvent() {
+    // Creepy Steeple entrance; beat Atomic Boo without picking up its item.
+    if (!ttyd::string::strcmp(common::GetCurrentMap(), "jin_00") &&
+        common::GetSavedFlagValue(0x8b2) && !common::GetSavedFlagValue(0x8c2)) {
+        // Respawn the item (the type doesn't matter, since it will get
+        // replaced with the proper item by ReplaceGeneralItem).
+        ttyd::itemdrv::itemEntry(
+            "item_999", /* type */ 0x79, /* mode */ 0, 
+            mod::common::kSavedWordFlagBaseValue + 0x8c2, nullptr, 
+            -64.0, 0.0, 0.0);
     }
 }
 
@@ -1105,6 +1132,15 @@ void Shufflizer::Init() {
                 gSelf->OnModuleLoaded(new_module);
             }
             return result;
+        });
+    // Run custom events after the main initialization event for a room has
+    // finished executing.
+    g_seq_mapChangeMain_trampoline = patch::HookFunction(
+        ttyd::seq_mapchange::seq_mapChangeMain, [](void* work) {
+            g_seq_mapChangeMain_trampoline(work);
+            if (reinterpret_cast<int32_t*>(work)[1] == 5) {
+                gSelf->AfterRoomInitEvent();
+            }
         });
     
     // ITEM REPLACEMENT:

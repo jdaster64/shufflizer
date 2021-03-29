@@ -30,6 +30,10 @@ private:
     // Runs initialization code specific to individual modules; e.g.
     // setting up shop data, randomizing Pit Charlieton's inventory, etc.
     void OnModuleLoaded(ttyd::oslink::OSModuleInfo* module_info);
+    // Runs custom code immediately after the main initialization event
+    // has finished executing when loading a room. Should be able to run
+    // synchronously in a single frame.
+    void AfterRoomInitEvent();
     // Overrides field / chest / block item spawns with shuffled replacements.
     int16_t ReplaceGeneralItem(int16_t id, int32_t collection_expr);
     void ReplaceChestItem(void* object);

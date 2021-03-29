@@ -62,6 +62,9 @@
 // unused:__assert
 80007388:getMarioStDvdRoot
 
+// seq_mapchange.o
+80007c2c:seq_mapChangeMain
+
 // dispdrv.o
 // unused:dispGetEntNum
 80010864:dispGetCurWork
