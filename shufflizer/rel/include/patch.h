@@ -7,6 +7,7 @@
 namespace mod::patch {
 
 void WriteBranch(void* ptr, void* destination);
+void WriteBranchBL(void* ptr, void* destination);
 
 void WritePatch(
     void* destination, const void* patch_start, const void* patch_end);
